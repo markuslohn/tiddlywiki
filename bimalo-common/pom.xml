@@ -1,19 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>de.bimalo.common</groupId>
     <artifactId>bimalo-common</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-
     <name>bimalo-common</name>
-    <url>http://maven.apache.org</url>
-
+    <url>http://www.bimalo.de</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -46,13 +42,12 @@
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <mainClass>de.bimalo.common.VersionInfo</mainClass>
-                            <addClasspath>false</addClasspath>							
+                            <addClasspath>false</addClasspath>
                         </manifest>
                         <manifestEntries>
                             <Specification-Vendor>bimalo.de</Specification-Vendor>
-                            <Specification-Title>Bimalo Common</Specification-Title> 
-                            <Specification-Version>${project.version} [${buildNumber}]</Specification-Version>              
-
+                            <Specification-Title>Bimalo Common</Specification-Title>
+                            <Specification-Version>${project.version} [${buildNumber}]</Specification-Version>
                             <Implementation-Vendor>bimalo.de</Implementation-Vendor>
                             <Implementation-Title>${project.artifactId}</Implementation-Title>
                             <Implementation-Version>${project.version} [${buildNumber}]</Implementation-Version>
@@ -83,10 +78,32 @@
             </plugin>
         </plugins>
     </build>
+    <organization>
+        <name>bimalo</name>
+        <url>http://www.bimalo.de</url>
+    </organization>
+    <developers>
+        <developer>
+            <id>mlohn</id>
+            <name>Markus Lohn</name>
+            <email>markus.lohn@bimalo.de</email>
+            <url>http://www.bimalo.de</url>
+            <organization>bimalo.de</organization>
+            <organizationUrl>http://www.bimalo.de</organizationUrl>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+    <issueManagement>
+        <system>Bitbucket</system>
+        <url>https://bitbucket.org/mlohn/tiddlywiki/issues</url>
+    </issueManagement>
     <scm>
-        <connection>scm:svn:http://127.0.0.1/dummy</connection>
-        <developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
+        <connection>scm:git:https://bitbucket.org/mlohn/tiddlywiki</connection>
+        <developerConnection>scm:git:https://bitbucket.org/mlohn/tiddlywiki.git</developerConnection>
         <tag>HEAD</tag>
-        <url>http://127.0.0.1/dummy</url>
+        <url>https://bitbucket.org/mlohn/tiddlywiki/src</url>
     </scm>
 </project>
