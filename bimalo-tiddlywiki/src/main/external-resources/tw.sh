@@ -17,5 +17,5 @@ for i in "$LIBDIR"/*.jar
 
 #echo $CLASSPATH
 
-java -Xmx512m -classpath "$CLASSPATH" de.bimalo.tiddlywiki.TiddlyWikiGenerator "$@"
+java -Xmx512m -classpath "$CLASSPATH" de.bimalo.tiddlywiki.generator.TiddlyWikiGenerator "$@"
 
