@@ -1,8 +1,12 @@
 package de.bimalo.tiddlywiki.generator;
 
 import de.bimalo.common.Assert;
+import de.bimalo.tiddlywiki.Tiddler;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.vfs2.FileNotFolderException;
 import org.apache.commons.vfs2.FileObject;
@@ -51,13 +55,10 @@ public final class DocumentVisitor implements FileObjectVisitor {
         tiddler.setText(buildText(file, properties));
 
         try {
-            tiddler.setUri(file.getURL().toURI());
+            String uristr = URLEncoder.encode(file.getName().getURI(), "UTF8");
+            tiddler.setUri(new URI(uristr));
         } catch (URISyntaxException ex) {
-            if (logger.isTraceEnabled()) {
-                logger.error(ex.getMessage(), ex);
-            } else {
-                logger.warn(ex.getMessage());
-            }
+            throw new IOException(ex);
         }
 
         if (logger.isTraceEnabled()) {
@@ -129,7 +130,7 @@ public final class DocumentVisitor implements FileObjectVisitor {
      */
     private List<String> filterKeywords(final FileObject file, final FileObjectProperties properties)
             throws FileSystemException {
-        List<String> keywords = properties.getKeywords();
+        List<String> keywords = new ArrayList(properties.getKeywords());
 
         FileObject parent = file.getParent();
         if (parent != null) {
