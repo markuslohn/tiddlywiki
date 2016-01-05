@@ -62,7 +62,6 @@ public class TiddlyWikiTest {
         Assert.assertEquals("Test1", title2);
     }
     
-    @Test
     public void TiddlyWiki_setTitle_InvalidArgument() {
         TiddlyWiki tw = new TiddlyWiki();
         assertNotNull(tw);
@@ -88,7 +87,6 @@ public class TiddlyWikiTest {
         Assert.assertEquals("SubTitle1", subTitle2);
     }
     
-    @Test
     public void TiddlyWiki_setSubTitle_InvalidArgument() {
         TiddlyWiki tw = new TiddlyWiki();
         assertNotNull(tw);
@@ -100,7 +98,6 @@ public class TiddlyWikiTest {
         }
     }
     
-    @Test
     public void TiddlyWiki_addTiddler_InvalidArgument() {
         TiddlyWiki tw = new TiddlyWiki();
         assertNotNull(tw);
@@ -112,7 +109,6 @@ public class TiddlyWikiTest {
         }
     }
     
-    @Test
     public void TiddlyWiki_addDefaultTiddler_InvalidArgument() {
         TiddlyWiki tw = new TiddlyWiki();
         assertNotNull(tw);
@@ -124,7 +120,7 @@ public class TiddlyWikiTest {
         }
     }
     
-    @Test
+  
     public void TiddlyWiki_addMainMenuTiddler_InvalidArgument() {
         TiddlyWiki tw = new TiddlyWiki();
         assertNotNull(tw);

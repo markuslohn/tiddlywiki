@@ -12,7 +12,7 @@ import java.net.URI;
  * See http://tiddlywiki.com for more information about TiddlyWiki and
  * Tiddlers.</p>
  * <p>
- * This special Tiddler type for files.</p>
+ * This special Tiddler type for files/documents.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
  * @version 1.0
@@ -31,14 +31,14 @@ public final class DocumentTiddler extends Tiddler {
     private URI uri = null;
 
     /**
-     * Creates <code>FileTiddler</code> with a default title.
+     * Creates <code>DocumentTiddler</code> with a default title.
      */
     public DocumentTiddler() {
         super();
     }
 
     /**
-     * Creates a <code>FileTiddler</code> with a specified title.
+     * Creates a <code>DocumentTiddler</code> with a specified title.
      *
      * @param title the title, when null a default title is used
      */

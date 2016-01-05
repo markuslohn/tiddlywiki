@@ -18,7 +18,7 @@ import java.util.Date;
  * @version $Rev$ $LastChangedDate$
  * @since 1.0
  */
-public final class Tiddler implements Comparable<Tiddler> {
+public class Tiddler implements Comparable<Tiddler> {
 
     /**
      * Name of the reserved Tiddler SiteTitle.

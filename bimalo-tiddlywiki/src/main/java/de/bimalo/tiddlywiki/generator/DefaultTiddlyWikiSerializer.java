@@ -245,7 +245,7 @@ public final class DefaultTiddlyWikiSerializer {
             writeLineFeed(writer);
             writer.append("__Referenzen__");
             writeLineFeed(writer);
-            writer.append("|!Typ|!Titel|!Author|!Datum|");
+            writer.append("|!Typ|!Name|!Author|!Datum|");
             writeLineFeed(writer);
             for (Tiddler refTiddler : tiddler.listTiddlers()) {
                 writeTiddlerReferenceAsTable(writer, refTiddler);
@@ -318,11 +318,29 @@ public final class DefaultTiddlyWikiSerializer {
     private void writeTiddlerReferenceAsTable(Writer writer, Tiddler tiddler) throws IOException {
         //Typ Column
         writer.append("|");
+        if (tiddler instanceof DocumentTiddler) {
+            writer.append("doc");
+        }
+        else {
+            writer.append("fld");
+        }
         //Titel Column
         writer.append("|");
-        writer.append("[[");
-        writer.append(StringEscapeUtils.escapeHtml(tiddler.getTitle()));
-        writer.append("]]");
+        if (tiddler instanceof DocumentTiddler) {
+            writer.append("[[");
+            writer.append(StringEscapeUtils.escapeHtml(((DocumentTiddler) tiddler).getName()));
+            writer.append("|");
+            writer.append(((DocumentTiddler) tiddler).getUri().toString());
+            writer.append("]]");
+            writer.append(" / ");
+            writer.append("[[");
+            writer.append(StringEscapeUtils.escapeHtml(tiddler.getTitle()));
+            writer.append("]]");
+        } else {
+            writer.append("[[");
+            writer.append(StringEscapeUtils.escapeHtml(tiddler.getTitle()));
+            writer.append("]]");
+        }
         //Author Column
         writer.append("|");
         writer.append(tiddler.getCreator());

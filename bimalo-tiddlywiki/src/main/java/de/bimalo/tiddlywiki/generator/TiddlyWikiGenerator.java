@@ -64,7 +64,7 @@ public final class TiddlyWikiGenerator {
      */
     private FileObject resultFile = null;
     /**
-     * The maximum traversal level in the file system hierarchy. A negativ value
+     * The maximum traversal level in the file system hierarchy. A negative value
      * means endless. Default is endless.
      */
     private int maxLevel = -1;
