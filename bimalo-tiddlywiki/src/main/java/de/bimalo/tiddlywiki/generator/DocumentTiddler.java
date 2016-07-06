@@ -1,7 +1,6 @@
 package de.bimalo.tiddlywiki.generator;
 
 import de.bimalo.tiddlywiki.Tiddler;
-
 import java.net.URI;
 
 /**
@@ -12,13 +11,11 @@ import java.net.URI;
  * See http://tiddlywiki.com for more information about TiddlyWiki and
  * Tiddlers.</p>
  * <p>
- * This special Tiddler type for files/documents.</p>
+ * This is a special Tiddler type for files/documents.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @version 1.0
- * @since 1.7
  */
-public final class DocumentTiddler extends Tiddler {
+final class DocumentTiddler extends Tiddler {
 
     /**
      * The name of the file.
@@ -33,7 +30,7 @@ public final class DocumentTiddler extends Tiddler {
     /**
      * Creates <code>DocumentTiddler</code> with a default title.
      */
-    public DocumentTiddler() {
+    DocumentTiddler() {
         super();
     }
 
@@ -42,7 +39,7 @@ public final class DocumentTiddler extends Tiddler {
      *
      * @param title the title, when null a default title is used
      */
-    public DocumentTiddler(final String title) {
+    DocumentTiddler(final String title) {
         super(title);
     }
 

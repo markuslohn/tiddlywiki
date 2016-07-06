@@ -2,57 +2,56 @@ package de.bimalo.tiddlywiki;
 
 import de.bimalo.common.Assert;
 import java.rmi.server.UID;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
-/*
+/**
  * <p>
- * TiddlyWiki is made up of chunks of information called tiddlers. A <code>
- * Tiddler</code> does represent only one tiddler embedded in a TiddlyWiki.</p>
+ * TiddlyWiki is made up of chunks of information called Tiddler's. A <code>
+ * Tiddler</code> represents only one Tiddler embedded in a TiddlyWiki.</p>
  * <p>
  * See http://tiddlywiki.com for more information about TiddlyWiki and tiddlers.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @version $Rev$ $LastChangedDate$
- * @since 1.0
+ * @see TiddlyWiki
  */
 public class Tiddler implements Comparable<Tiddler> {
 
     /**
      * Name of the reserved Tiddler SiteTitle.
      */
-    public final static String TITLE_TIDDLER_NAME = "SiteTitle";
+    public static final String TITLE_TIDDLER_NAME = "SiteTitle";
     /**
      * Name of the reserved Tiddler SiteSubtitle.
      */
-    public final static String SUBTITLE_TIDDLER_NAME = "SiteSubtitle";
+    public static final String SUBTITLE_TIDDLER_NAME = "SiteSubtitle";
     /**
      * Name of the reserved Tiddler MainMenu.
      */
-    public final static String MAINMENU_TIDDLER_NAME = "MainMenu";
+    public static final String MAINMENU_TIDDLER_NAME = "MainMenu";
     /**
      * Name of the reserved Tiddler DefaultTiddlers.
      */
-    public final static String DEFAULTTIDDLERS_TIDDLER_NAME = "DefaultTiddlers";
+    public static final String DEFAULTTIDDLERS_TIDDLER_NAME = "DefaultTiddlers";
 
     /**
      * An array of Tiddler names reserved by the TiddlyWiki implementation.
      */
-    private static String[] RESERVED_TIDDLER_NAMES = new String[]{
+    private static final String[] RESERVED_TIDDLER_NAMES = new String[]{
         TITLE_TIDDLER_NAME, SUBTITLE_TIDDLER_NAME, MAINMENU_TIDDLER_NAME, DEFAULTTIDDLERS_TIDDLER_NAME
     };
     /**
-     * A unique identifier of this Tiddler.
+     * A unique identifier for this Tiddler.
      */
     private UID id = new UID();
     /**
-     * The title of this Tiddler.
+     * The Tiddler's title.
      */
     private String title = null;
     /**
-     * The human readable name of user created this Tiddler.
+     * The human readable name of the user created this Tiddler.
      */
     private String creator = null;
     /**
@@ -64,8 +63,8 @@ public class Tiddler implements Comparable<Tiddler> {
      */
     private Date createDate = null;
     /**
-     * The content of this Tiddler. It can contain simple text but also Wiki
-     * syntax.
+     * The content of this Tiddler. It can contain simple text or text following
+     * wiki syntax or markup language.
      */
     private String text = null;
     /**
@@ -85,30 +84,32 @@ public class Tiddler implements Comparable<Tiddler> {
     /**
      * The hash code for this Tiddler.
      */
-    int hashCode = 0;
+    private int hashCode = 0;
 
     /**
-     * Creates <code>Tiddler</code> with default values.
+     * Creates a new <code>Tiddler</code> with default values.
      */
     public Tiddler() {
-        this.title = "New Tiddler.";
+        title = "New Tiddler";
         initDefaultValues();
     }
 
     /**
-     * Creates a <code>Tiddler</code> with a specified title.
+     * Creates a new <code>Tiddler</code> with a specified title.
      *
-     * @param title the title
-     * @exception IllegalArgumentException if title is null or empty
+     * @param title the title, if null a default value will be used instead
      */
     public Tiddler(String title) {
-        Assert.notNull(title);
-        this.title = title;
+        if (title == null || title.isEmpty()) {
+            this.title = "New Tiddler";
+        } else {
+            this.title = title;
+        }
         initDefaultValues();
     }
 
     /**
-     * Gets the Parent-Tiddler for this Tiddler.
+     * Gets the Parent-Tiddler.
      *
      * @return the Parent-Tiddler or null if this Tiddler does not have a
      * Parent-Tiddler.
@@ -127,19 +128,17 @@ public class Tiddler implements Comparable<Tiddler> {
     }
 
     /**
-     * Adds an existing Tiddler to the current one. The current Tiddler becomes
-     * automatically the "Parent"-Tiddler. If the parameter tiddler is null or
-     * it is already added nothing will be done.
+     * Adds a Tiddler to this Tiddler. This Tiddler becomes automatically the
+     * Parent-Tiddler of the provided Tiddler.
      *
-     * @param tiddler the Tiddler to add
+     * @param tiddler a Tiddler to add, if null nothing will be modified
      */
     public void addTiddler(Tiddler tiddler) {
-        if (tiddler == null || tiddlers.contains(tiddler)) {
-            return;
-        }
-        tiddlers.add(tiddler);
-        if (!isReservedTiddler()) {
-            tiddler.setParent(this);
+        if (tiddler != null && !tiddlers.contains(tiddler)) {
+            tiddlers.add(tiddler);
+            if (!isReservedTiddler()) {
+                tiddler.setParent(this);
+            }
         }
     }
 
@@ -199,7 +198,8 @@ public class Tiddler implements Comparable<Tiddler> {
     }
 
     /**
-     * Adds a tag to this Tiddler.
+     * Adds a tag to this Tiddler. This function cannot be applied to a
+     * "reserved" Tiddler.
      *
      * @param tag the new tag
      * @exception IllegalArgumentException if this Tiddler is a "reserved"
@@ -207,14 +207,14 @@ public class Tiddler implements Comparable<Tiddler> {
      */
     public void addTag(String tag) {
         Assert.isTrue(!isReservedTiddler(), "addTag can't be used for a reserved Tiddler.");
-        if (tag == null || tag.isEmpty() || tags.contains(tag)) {
-            return;
+        if (tag != null && !tag.isEmpty()) {
+            tags.add(tag);
         }
-        tags.add(tag);
     }
 
     /**
-     * Adds a <code>java.util.List<code> of Strings with tags to this Tiddler.
+     * Adds a <code>java.util.List</code> of Strings with tags to this Tiddler.
+     * This function cannot be applied to a "reserved" Tiddler.
      *
      * @param tags a list with tags
      * @exception IllegalArgumentException if this Tiddler is a "reserved"
@@ -222,7 +222,7 @@ public class Tiddler implements Comparable<Tiddler> {
      */
     public void addTags(List<String> tags) {
         Assert.isTrue(!isReservedTiddler(), "addTag can't be used for a reserved Tiddler.");
-        if (tags != null && !tags.isEmpty()) {
+        if (tags != null) {
             this.tags.addAll(tags);
         }
     }
@@ -292,16 +292,18 @@ public class Tiddler implements Comparable<Tiddler> {
     }
 
     /**
-     * Sets a new title for this Tiddler.
+     * Sets a new title for this Tiddler. Cannot be applied to a "reserved"
+     * Tiddler. If title is null nothing will be modified.
      *
-     * @param title a new title
-     * @exception IllegalArgumentException if title is null
+     * @param title the new title
+     * @exception IllegalArgumentException if this is a "reserved" Tiddler.
      */
     public void setTitle(String title) {
-        Assert.notNull(title);
         Assert.isTrue(!isReservedTiddler(), "setTitle can't be used for a reserved Tiddler.");
-        this.title = title;
-        hashCode = 0;
+        if (title != null && !title.isEmpty()) {
+            this.title = title;
+            this.hashCode = 0;
+        }
     }
 
     /**
@@ -341,12 +343,27 @@ public class Tiddler implements Comparable<Tiddler> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Tiddler {");
+        sb.append("Tiddler [");
         sb.append("title=").append(title).append(", ");
         sb.append("modifier=").append(modifier).append(", ");
         sb.append("created=").append(createDate);
-        sb.append("}");
+        sb.append("]");
         return sb.toString();
+    }
+
+    /**
+     * Compares a given <code>Tiddler</code> with this Tiddler. It uses the
+     * create date and the title of the Tiddler to make the comparison.
+     *
+     * @param o the Tiddler to compare
+     * @return a negative integer, zero, or a positive integer as the first
+     * argument is less than, equal to, or greater than the
+     */
+    public int compareTo(Tiddler o) {
+        Assert.notNull(o);
+
+        String title2 = o.getTitle();
+        return title.compareTo(title2);
     }
 
     /**
@@ -427,18 +444,4 @@ public class Tiddler implements Comparable<Tiddler> {
         return reserved;
     }
 
-    /**
-     * Compares a given <code>Tiddler</code> with this Tiddler. It uses the
-     * create date and the title of the Tiddler to make the comparison.
-     *
-     * @param o the Tiddler to compare
-     * @return a negative integer, zero, or a positive integer as the first
-     * argument is less than, equal to, or greater than the
-     */
-    public int compareTo(Tiddler o) {
-        Assert.notNull(o);
-
-        String title2 = o.getTitle();
-        return title.compareTo(title2);
-    }
 }

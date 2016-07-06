@@ -28,15 +28,13 @@ import org.slf4j.LoggerFactory;
  * </ol></p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @version 1.0
- * @since 1.0
  */
 class DirectoryProperties extends FileObjectProperties {
 
     /**
      * Logger definition for this object.
      */
-    private Logger logger = LoggerFactory.getLogger(DirectoryProperties.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryProperties.class);
 
     /**
      * The name of the text file containing the meta data for the
@@ -77,11 +75,9 @@ class DirectoryProperties extends FileObjectProperties {
 
     @Override
     protected void loadMetadata(FileObject file) throws IOException {
-        logger.trace("metadataFileName= {}", metadataFileName);
-
         FileObject metadataFile = resolveFile(metadataFileName);
         if (metadataFile != null && metadataFile.exists()) {
-            logger.trace("metadata file {} exists.", metadataFile.getName().getPath());
+            LOGGER.trace("metadata file {} exists.", metadataFile.getName().getPath());
             super.loadMetadata(metadataFile);
         }
     }

@@ -11,11 +11,9 @@ import org.apache.commons.vfs2.FileObject;
  * <code>org.apache.commons.vfs2.FileObject</code> to sort a list.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @version 1.0
- * @since 1.7
  * @see Tiddler
  */
-public final class FilenameComparator implements Comparator<FileObject>, Serializable {
+final class FilenameComparator implements Comparator<FileObject>, Serializable {
 
     /**
      * Compares two <code>org.apache.commons.vfs2.FileObject</code> by using the

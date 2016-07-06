@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
  * A test case for <code>DocumentProperties</code>.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @since 1.7
  * @see BinaryDocumentProperties
  */
 public class DocumentPropertiesTest {
@@ -59,8 +58,6 @@ public class DocumentPropertiesTest {
             assertNull(properties.getAuthor());
             assertNull(properties.getDescription());
             assertNull(properties.getTitle());
-            //assertEquals("Testcontent\n", properties.getText());
-
         } catch (Exception ex) {
             ex.printStackTrace();
             assertTrue(false);

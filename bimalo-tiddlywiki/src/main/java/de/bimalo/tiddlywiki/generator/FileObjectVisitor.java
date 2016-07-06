@@ -14,8 +14,6 @@ import org.apache.commons.vfs2.FileObject;
  * classes.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @version 1.0
- * @since 1.7
  */
 public interface FileObjectVisitor {
 

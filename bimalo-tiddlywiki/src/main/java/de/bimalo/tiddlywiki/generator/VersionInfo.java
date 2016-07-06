@@ -10,117 +10,84 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Manages version information about this application. The version information
- * are retrieved by reading the manifest.mf file in the jar-File where the
- * requested package is located. Consult <code>java.lang.Package</code> for more
- * details on how to provide this information in manifest.mf.
+ * Reads version information from the manifest file. The version information can
+ * be printed as simple string value. Another possibility is to display the
+ * complete information within a AWT dialog.
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @version $Rev$ $LastChangedDate$
+ * @version 1.0
  * @since 1.0
- * @see java.lang.Package
  */
 public final class VersionInfo {
 
     /**
-     * The default name of the package where this VersionInfo class belongs to.
+     * The name of the package where this class belongs to.
      */
-    private static String defaultPackageName
+    private final String packageName
             = VersionInfo.class.getPackage().getName();
-
-    /**
-     * A name of a package for which to retrieve version information.
-     */
-    private String customPackageName;
-
     /**
      * The implementation title.
      */
     private String implementationTitle;
-
     /**
      * The implementation vendor.
      */
     private String implementationVendor;
-
     /**
      * The implementation version.
      */
     private String implementationVersion;
-
     /**
      * The specification title.
      */
     private String specificationTitle;
-
     /**
      * The specification vendor.
      */
     private String specificationVendor;
-
     /**
      * The specification version.
      */
     private String specificationVersion;
-
     /**
      * The name of the operating system.
      */
     private String operatingSystem;
-
     /**
      * The version of the operating system.
      */
     private String operationSystemVersion;
-
     /**
      * The version of JAVA.
      */
     private String javaVersion;
-
     /**
      * The name of the vendor of the JVM.
      */
     private String javaVendor;
 
     /**
-     * Constructs a new <code>VersionInfo</code> object. The version information
-     * will be retrieved for the package of this VersionInfo class.
-     *
-     * @exception NullPointerException if the package could not be found in the
-     * classpath
+     * Constructs a new <code>VersionInfo</code> object.
      */
     public VersionInfo() {
-        customPackageName = defaultPackageName;
-        Package p = Package.getPackage(customPackageName);
+        Package p = Package.getPackage(packageName);
         if (p == null) {
-            throw new NullPointerException(getPackageNotFoundErrorMessage(customPackageName));
-        }
-        loadVersionInformationForPackage(p);
-    }
-
-    /**
-     * Constructs a new <code>VersionInfo</code> object with given package name.
-     * If the the packageName is null the default package name will be used
-     * instead. This means it uses the package where this Versioninfo class
-     * belongs to.
-     * @param packageName a package name
-     
-     * @throws NullPointerException if the package could not be found in the
-     * classpath
-     */
-    public VersionInfo(String packageName) {
-        if (packageName == null || packageName.length() == 0) {
-            customPackageName = defaultPackageName;
-        } else {
-            customPackageName = String.valueOf(packageName);
+            throw new NullPointerException("Package " + packageName
+                    + " could not be found in the classpath.");
         }
 
-        Package p = Package.getPackage(customPackageName);
-        if (p == null) {
-            throw new NullPointerException(getPackageNotFoundErrorMessage(customPackageName));
-        }
-        loadVersionInformationForPackage(p);
+        this.implementationTitle = p.getImplementationTitle();
+        this.implementationVendor = p.getImplementationVendor();
+        this.implementationVersion = p.getImplementationVersion();
+
+        this.specificationTitle = p.getImplementationTitle();
+        this.specificationVendor = p.getSpecificationVendor();
+        this.specificationVersion = p.getSpecificationVersion();
+
+        this.operatingSystem = System.getProperty("os.name");
+        this.operationSystemVersion = System.getProperty("os.version");
+        this.javaVersion = System.getProperty("java.version");
+        this.javaVendor = System.getProperty("java.vendor");
     }
 
     /**
@@ -140,7 +107,7 @@ public final class VersionInfo {
     }
 
     /**
-     * Prints versioning information to the standard output device.
+     * Prins versioning information to the standard output device.
      */
     public void printToStdout() {
         System.out.print(getVersionInformation());
@@ -150,7 +117,7 @@ public final class VersionInfo {
      * Prints the versioning information to a AWT frame window.
      */
     public void printToWindow() {
-        Frame frame = new Frame(customPackageName);
+        final Frame frame = new Frame(packageName);
         frame.setLayout(null);
         frame.setSize(new Dimension(400, 300));
         frame.setBackground(SystemColor.control);
@@ -159,11 +126,7 @@ public final class VersionInfo {
         Button button1 = new Button();
         button1.setLabel("OK");
         button1.setBounds(new Rectangle(163, 240, 68, 23));
-        button1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
+        button1.addActionListener(new CloseActionListener(frame));
         TextArea textArea1 = new TextArea();
         textArea1.setBounds(new Rectangle(10, 40, 375, 185));
         textArea1.setEditable(false);
@@ -174,19 +137,15 @@ public final class VersionInfo {
         frame.setVisible(true);
     }
 
-    /**
-     * Povides the versioning information as String.
-     *
-     * @return versioning information
-     */
+    @Override
     public String toString() {
         return getVersionInformation();
     }
 
     private String getVersionInformation() {
-        StringBuffer sbuf = new StringBuffer();
+        StringBuilder sbuf = new StringBuilder();
 
-        sbuf.append("Package Name: ").append(customPackageName);
+        sbuf.append("Package Name: ").append(packageName);
         sbuf.append("\n");
         sbuf.append("Implementation Title: ");
         if (this.implementationTitle != null) {
@@ -273,31 +232,20 @@ public final class VersionInfo {
         new VersionInfo().show(args);
     }
 
-    /**
-     * Loads the version information for the provided package.l
-     *
-     * @param p the package used to retrieve version informations
-     */
-    private void loadVersionInformationForPackage(Package p) {
-        implementationTitle = p.getImplementationTitle();
-        implementationVendor = p.getImplementationVendor();
-        implementationVersion = p.getImplementationVersion();
+    private static class CloseActionListener implements ActionListener {
 
-        specificationTitle = p.getImplementationTitle();
-        specificationVendor = p.getSpecificationVendor();
-        specificationVersion = p.getSpecificationVersion();
+        /**
+         * Reference to the frame to close.
+         */
+        private Frame frame = null;
 
-        operatingSystem = System.getProperty("os.name");
-        operationSystemVersion = System.getProperty("os.version");
-        javaVersion = System.getProperty("java.version");
-        javaVendor = System.getProperty("java.vendor");
-    }
+        CloseActionListener(Frame frame) {
+            this.frame = frame;
+        }
 
-    private String getPackageNotFoundErrorMessage(String packageName) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("Package ");
-        sb.append(packageName);
-        sb.append(" could not be found in the classpath.");
-        return sb.toString();
+        public void actionPerformed(ActionEvent e) {
+            frame.dispose();
+        }
+
     }
 }

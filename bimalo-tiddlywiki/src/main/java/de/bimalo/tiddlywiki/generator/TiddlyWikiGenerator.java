@@ -109,9 +109,9 @@ public final class TiddlyWikiGenerator {
     public void run() {
         try {
             logger.info("Start analyzing from {}...", rootFolder.getName().getPath());
-            FilesystemTraversal traverser = new FilesystemTraversal(rootFolder);
+            FilesystemTreeWalker traverser = new FilesystemTreeWalker(rootFolder);
             traverser.setMaxLevel(maxLevel);
-            TiddlyWiki tw = traverser.traverse();
+            TiddlyWiki tw = traverser.walkFileTree();
             logger.info("Done.");
 
             logger.info("Write TiddlyWiki to file {}...", resultFile.getName().getPath());

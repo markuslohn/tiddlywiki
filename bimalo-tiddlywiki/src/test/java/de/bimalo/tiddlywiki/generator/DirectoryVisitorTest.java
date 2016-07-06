@@ -1,15 +1,11 @@
 package de.bimalo.tiddlywiki.generator;
 
 import de.bimalo.tiddlywiki.Tiddler;
-import de.bimalo.tiddlywiki.generator.DirectoryVisitor;
-import de.bimalo.tiddlywiki.generator.FileObjectVisitor;
-import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.util.Date;
 import org.apache.commons.vfs2.FileContent;
-import org.apache.commons.vfs2.FileName;
 import org.apache.commons.vfs2.FileNotFolderException;
 import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -25,7 +21,6 @@ import static org.mockito.Mockito.when;
  * A test case for <code>DirectoryVisitor</code>.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @since 1.7
  * @see DirectoryVisitor
  */
 public class DirectoryVisitorTest {
@@ -53,7 +48,7 @@ public class DirectoryVisitorTest {
     public void DirectoryVisitor_visit_DirectoryPropertiesNotAvailable() {
         FileObject directory;
         try {
-            directory = getDirectoryFileObject("TestOrdner", "/Referenz/T", "");
+            directory = FileObjectFixture.getDirectoryFileObject("TestOrdner", "");
 
             FileObjectVisitor visitor = new DirectoryVisitor();
             Object result = visitor.visit(directory);
@@ -80,7 +75,7 @@ public class DirectoryVisitorTest {
             StringBuilder sb = new StringBuilder();
             sb.append("TestOrdner2").append("\n");
             String text = sb.toString();
-            directory = getDirectoryFileObject("TestOrdner", "/Referenz/T", text, true);
+            directory = FileObjectFixture.getDirectoryFileObject("TestOrdner", text, true, true);
 
             FileObjectVisitor visitor = new DirectoryVisitor();
             Object result = visitor.visit(directory);
@@ -107,7 +102,7 @@ public class DirectoryVisitorTest {
             sb.append("TestOrdner2").append("\n");
             sb.append("A").append("\n");
             String text = sb.toString();
-            directory = getDirectoryFileObject("TestOrdner", "/Referenz/T", text, true);
+            directory = FileObjectFixture.getDirectoryFileObject("TestOrdner", text, true, true);
 
             FileObjectVisitor visitor = new DirectoryVisitor();
             Object result = visitor.visit(directory);
@@ -136,7 +131,7 @@ public class DirectoryVisitorTest {
             sb.append("TestOrdner2").append("\n");
             sb.append("A,B").append("\n");
             String text = sb.toString();
-            directory = getDirectoryFileObject("TestOrdner", "/Referenz/T", text, true);
+            directory = FileObjectFixture.getDirectoryFileObject("TestOrdner", text, true, true);
 
             FileObjectVisitor visitor = new DirectoryVisitor();
             Object result = visitor.visit(directory);
@@ -181,47 +176,12 @@ public class DirectoryVisitorTest {
         try {
             FileObjectVisitor visitor = new DirectoryVisitor();
             visitor.visit(null);
-            fail("A IllegalArgumentException is expected to be thrown.");
-        } catch (IllegalArgumentException ex) {
+            fail("A FileNotFoundException is expected to be thrown.");
+        } catch (FileNotFoundException ex) {
             assertTrue(true);
         } catch (Exception ex) {
             fail("A IllegalArgumentException is expected to be thrown.");
         }
 
     }
-
-    private FileObject getDirectoryFileObject(String name, String path, String text) throws FileSystemException {
-        return getDirectoryFileObject(name, path, text, true);
-    }
-
-    private FileObject getDirectoryFileObject(String name, String path, String text, boolean metadataFileExists) throws FileSystemException {
-        FileContent documentContent = mock(FileContent.class);
-        when(documentContent.getInputStream()).thenReturn(new ByteArrayInputStream(text.getBytes()));
-        FileName documentName = mock(FileName.class);
-        when(documentName.getPath()).thenReturn(path + "/" + name + ".txt");
-        FileObject document = mock(FileObject.class);
-        when(document.getName()).thenReturn(documentName);
-        when(document.getContent()).thenReturn(documentContent);
-        when(document.getType()).thenReturn(FileType.FILE);
-        if (metadataFileExists) {
-            when(document.exists()).thenReturn(Boolean.TRUE);
-        } else {
-            when(document.exists()).thenReturn(Boolean.FALSE);
-        }
-
-        FileContent directoryContent = mock(FileContent.class);
-        when(directoryContent.getLastModifiedTime()).thenReturn(Long.valueOf(new Date().getTime()));
-        FileName directoryName = mock(FileName.class);
-        when(directoryName.getBaseName()).thenReturn(name);
-        when(directoryName.getPath()).thenReturn(path);
-        FileObject directory = mock(FileObject.class);
-        when(directory.getName()).thenReturn(directoryName);
-        when(directory.getContent()).thenReturn(directoryContent);
-        when(directory.getType()).thenReturn(FileType.FOLDER);
-        when(directory.resolveFile(name + ".txt")).thenReturn(document);
-        when(directory.exists()).thenReturn(Boolean.TRUE);
-
-        return directory;
-    }
-
 }

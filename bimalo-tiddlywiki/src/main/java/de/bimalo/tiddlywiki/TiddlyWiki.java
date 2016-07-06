@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/*
+/**
  * <p>
  * A TiddlyWiki, a reusable non-linear personal web notebook. It's a unique wiki 
  * that people love using to keep ideas and information organised.</p>
@@ -15,8 +15,6 @@ import java.util.List;
  * See http://tiddlywiki.com for more information about TiddlyWiki and tiddlers.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @version $Rev$ $LastChangedDate$
- * @since 1.0
  * @see Tiddler
  */
 public final class TiddlyWiki {
@@ -110,7 +108,7 @@ public final class TiddlyWiki {
     }
 
     /**
-     * Gets the title for this TiddlyWiki.
+     * Gets the title of this TiddlyWiki.
      *
      * @return the title
      */
@@ -119,7 +117,7 @@ public final class TiddlyWiki {
     }
 
     /**
-     * Gets the sub-title for this TiddlyWiki
+     * Gets the sub-title of this TiddlyWiki.
      *
      * @return the sub-title
      */
@@ -127,48 +125,42 @@ public final class TiddlyWiki {
         return siteSubtitle.getText();
     }
 
+    /**
+     * Gets the reference to the Tiddler representing the title.
+     *
+     * @return the Title Tiddler
+     */
     public Tiddler getTitleTiddler() {
         return siteTitle;
-        //TODO kopie erstellen
     }
 
+    /**
+     * Gets the reference to the Tiddler representing the sub-title.
+     *
+     * @return the Sub-Title Tiddler
+     */
     public Tiddler getSubtitleTiddler() {
         return siteSubtitle;
-        //TODO kopie erstellen
     }
 
+    /**
+     * Gets the reference to the Tiddler representing the main menu.
+     *
+     * @return the Main Menu Tiddler
+     */
     public Tiddler getMainMenuTiddler() {
         return mainMenu;
-        //TODO kopie erstellen
     }
 
+    /**
+     * Gets the reference to the Tiddler representing defaults.
+     *
+     * @return the Default Tiddler
+     */
     public Tiddler getDefaultTiddler() {
         return defaultTiddlers;
-        //TODO kopie erstellen
     }
 
-    /**
-     * Gets all <code>Tiddler</code>'s as an unmodifiable
-     * <code>java.util.List</code> that will be placed in the main menu of this
-     * TiddlyWiki.
-     *
-     * @return an unmodifiable list of Tiddler's.
-     *
-     * public List<Tiddler> listMainMenuTiddlers() { return
-     * Collections.unmodifiableList(mainMenu.listTiddlers()); }
-     *
-     */
-    /**
-     * Gets all <code>Tiddler</code>'s as an unmodifiable
-     * <code>java.util.List</code> that will be automatically opened at startup
-     * of this TiddlyWiki.
-     *
-     * @return an unmodifiable list of Tiddler's.
-     *
-     * public List<Tiddler> listDefaultTiddlers() { return
-     * Collections.unmodifiableList(defaultTiddlers.listTiddlers()); }
-     *
-     */
     /**
      * Gets an unmodifiable <code>java.util.List</code> of
      * <code>Tiddler</code>'s that belongs to this TiddlyWiki.

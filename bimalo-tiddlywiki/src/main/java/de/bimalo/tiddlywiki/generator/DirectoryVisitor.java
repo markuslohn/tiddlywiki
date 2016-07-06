@@ -1,9 +1,11 @@
 package de.bimalo.tiddlywiki.generator;
 
-import de.bimalo.common.Assert;
+import de.bimalo.tiddlywiki.Tiddler;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.apache.commons.vfs2.FileNotFolderException;
 import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,29 +19,44 @@ import org.slf4j.LoggerFactory;
  * It creates a <code>Tiddler</code> based on the current directory/folder.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @version 1.0
- * @since 1.7
- * @see FileObjectTiddler
+ * @see Tiddler
  */
 final class DirectoryVisitor implements FileObjectVisitor {
 
     /**
      * Logger instance.
      */
-    private static Logger logger = LoggerFactory.getLogger(DirectoryVisitor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryVisitor.class);
 
     @Override
     public Object visit(FileObject file) throws IOException {
-        Assert.notNull(file);
+        if (file == null) {
+            throw new FileNotFoundException("Null reference was provided as directory.");
+        }
+
         if (!(file.getType().equals(FileType.FOLDER))) {
             throw new FileNotFolderException(file);
         }
 
-        logger.trace("Gets FileObjectProperties for directory {}...", file.getName().getPath());
-        FileObjectProperties properties = getFileObjectProperties(file);
-        logger.trace("Done.");
+        FileObjectProperties properties = getProperties4Directory(file);
+        Tiddler tiddler = createTiddler4Directory(file, properties);
 
-        logger.trace("Create tiddler for directory {}...", file.getName().getPath());
+        return tiddler;
+    }
+
+    /**
+     * Creates a new Tiddler based on the given FileObject and
+     * FileObjectProperties.
+     *
+     * @param file the reference to the directory
+     * @param properties the properties of the directory
+     * @return the new Tiddler
+     * @throws FileSystemException if operation fails
+     * @throws IOException if operation fails
+     */
+    private Tiddler createTiddler4Directory(FileObject file, FileObjectProperties properties)
+            throws FileSystemException, IOException {
+        LOGGER.trace("Create tiddler for directory {}...", file.getName().getPath());
         DirectoryTiddler tiddler = new DirectoryTiddler();
         tiddler.setName(file.getName().getBaseName());
         tiddler.setTitle(properties.getTitle());
@@ -47,25 +64,26 @@ final class DirectoryVisitor implements FileObjectVisitor {
         tiddler.setText(properties.getText());
         tiddler.addTags(properties.getKeywords());
 
-        if (logger.isTraceEnabled()) {
-            logger.trace(tiddler.toString());
+        LOGGER.trace("Done create tiddler for directory {}...", file.getName().getPath());
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace(tiddler.toString());
         }
-
-        logger.trace("Done.");
 
         return tiddler;
     }
 
     /**
-     * Gets the FileObjectProperties for the given FileObject.
+     * Gets all properties for the given FileObject representing a directory.
      *
-     * @param file the FileObject
+     * @param file the reference to a directory
      * @return the FileObjectProperties for the given FileObject.
      * @throws IOException if operation failed
      */
-    private FileObjectProperties getFileObjectProperties(FileObject file) throws IOException {
+    private FileObjectProperties getProperties4Directory(FileObject file) throws IOException {
+        LOGGER.trace("Reading all properties for directory {}...", file.getName().getPath());
         DirectoryProperties properties = new DirectoryProperties(file);
         properties.reload();
+        LOGGER.trace("Done reading all properties for directory {}...", file.getName().getPath());
         return properties;
     }
 }

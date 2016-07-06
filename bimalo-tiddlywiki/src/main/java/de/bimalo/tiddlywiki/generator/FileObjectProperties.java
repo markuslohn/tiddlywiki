@@ -13,6 +13,7 @@ import java.util.StringTokenizer;
 import org.apache.commons.vfs2.FileContent;
 import org.apache.commons.vfs2.FileContentInfo;
 import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,8 +25,6 @@ import org.slf4j.LoggerFactory;
  * available.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @version 1.0
- * @since 1.7
  * @see org.apache.commons.vfs2.FileObject
  */
 abstract class FileObjectProperties {
@@ -33,7 +32,7 @@ abstract class FileObjectProperties {
     /**
      * Logger definition for this object.
      */
-    private Logger logger = LoggerFactory.getLogger(FileObjectProperties.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileObjectProperties.class);
 
     /**
      * The reference to the <code>org.apache.commons.vfs2.FileObject</code>.
@@ -80,7 +79,7 @@ abstract class FileObjectProperties {
      *
      * @param file FileObject representing a document or directory.
      * @exception IllegalArgumentException if file is null
-     * @IOException if FileObjectProperties cannot be initialized
+     * @exception IOException if FileObjectProperties cannot be initialized
      */
     protected FileObjectProperties(FileObject file) throws IOException {
         Assert.notNull(file);
@@ -176,10 +175,17 @@ abstract class FileObjectProperties {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Directory: ").append(file.getName().getPath()).append("\n");
+        sb.append(file.getName().getBaseName()).append("\n");
+        sb.append(" [");
+        try {
+            sb.append("Type=").append(file.getType().getName()).append("\n");
+        } catch (FileSystemException ex) {
+            // can be ignore!
+        }
+        sb.append("Path=").append(file.getName().getPath()).append("\n");
         sb.append("Title=").append(title).append("\n");
-        sb.append("Keywords=").append(keywords).append("\n");
-        sb.append("Description=").append(description).append("\n");
+        sb.append("ModifyDate=").append(lastModifyDate).append("\n");
+        sb.append("]");
         return sb.toString();
     }
 
@@ -206,7 +212,7 @@ abstract class FileObjectProperties {
             String line = "";
 
             while ((line = lnr.readLine()) != null) {
-                logger.trace("Read line {}", line);
+                LOGGER.trace("Read line {}", line);
 
                 int lineNr = lnr.getLineNumber();
                 switch (lineNr) {
@@ -253,11 +259,9 @@ abstract class FileObjectProperties {
      * @param path The path of the file to locate. Can either be a relative path
      * or an absolute path.
      * @return the FileObject
-     * @exception IllegalArgumentException if path is null
      * @throws IOException if operation failed
      */
     protected FileObject resolveFile(String path) throws IOException {
-        Assert.notNull(path);
         return file.resolveFile(path);
     }
 
@@ -337,7 +341,7 @@ abstract class FileObjectProperties {
             while (csKeywordsTokenizer.hasMoreTokens()) {
                 String keyword = csKeywordsTokenizer.nextToken();
                 keyword = keyword.trim();
-                logger.trace("keyword= {}.", keyword);
+                LOGGER.trace("keyword= {}.", keyword);
                 if (keyword != null && !keyword.isEmpty()) {
                     addKeyword(keyword);
                 }

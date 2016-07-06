@@ -320,8 +320,7 @@ public final class DefaultTiddlyWikiSerializer {
         writer.append("|");
         if (tiddler instanceof DocumentTiddler) {
             writer.append("doc");
-        }
-        else {
+        } else {
             writer.append("fld");
         }
         //Titel Column

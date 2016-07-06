@@ -14,30 +14,29 @@ import static org.junit.Assert.*;
  * A test case for <code>TiddlyWiki</code>.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @since 1.0
- * @see TiddlyWiki TODO: addXXX Testfälle ergänzen!
+ * @see TiddlyWiki
  */
 public class TiddlyWikiTest {
-    
+
     public TiddlyWikiTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
-    
+
     @Test
     public void TiddlyWiki_construct_DefaultValues() {
         TiddlyWiki tw = new TiddlyWiki();
@@ -46,7 +45,7 @@ public class TiddlyWikiTest {
         Assert.assertEquals("", tw.getSubTitle());
         Assert.assertEquals(0, tw.listTiddlers().size());
     }
-    
+
     @Test
     public void TiddlyWiki_setTitle_Unmodifiable() {
         TiddlyWiki tw = new TiddlyWiki();
@@ -56,23 +55,22 @@ public class TiddlyWikiTest {
         Assert.assertEquals("Test1", title);
         Assert.assertEquals("", tw.getSubTitle());
         Assert.assertEquals(0, tw.listTiddlers().size());
-        
+
         title = "Test2";
         String title2 = tw.getTitle();
         Assert.assertEquals("Test1", title2);
     }
-    
+
+    @Test
     public void TiddlyWiki_setTitle_InvalidArgument() {
         TiddlyWiki tw = new TiddlyWiki();
-        assertNotNull(tw);
-        try {
-            tw.setTitle(null);
-            fail("IllegalArgumentException expected.");
-        } catch (IllegalArgumentException ex) {
-            assertTrue(true);
-        }
+        tw.setTitle("test1");
+        tw.setTitle(null);
+        assertEquals(tw.getTitle(), "test1");
+        tw.setTitle("");
+        assertEquals(tw.getTitle(), "test1");
     }
-    
+
     @Test
     public void TiddlyWiki_setSubTitle_Unmodifiable() {
         TiddlyWiki tw = new TiddlyWiki();
@@ -81,67 +79,56 @@ public class TiddlyWikiTest {
         String subTitle = tw.getSubTitle();
         Assert.assertEquals("SubTitle1", subTitle);
         Assert.assertEquals(0, tw.listTiddlers().size());
-        
+
         subTitle = "Test2";
         String subTitle2 = tw.getSubTitle();
         Assert.assertEquals("SubTitle1", subTitle2);
     }
-    
+
+    @Test
     public void TiddlyWiki_setSubTitle_InvalidArgument() {
         TiddlyWiki tw = new TiddlyWiki();
-        assertNotNull(tw);
-        try {
-            tw.setSubtitle(null);
-            fail("IllegalArgumentException expected.");
-        } catch (IllegalArgumentException ex) {
-            assertTrue(true);
-        }
+        tw.setSubtitle("test1");
+        tw.setSubtitle(null);
+        assertEquals(tw.getSubTitle(), "test1");
+        tw.setTitle("");
+        assertEquals(tw.getSubTitle(), "test1");
     }
-    
+
+    @Test
     public void TiddlyWiki_addTiddler_InvalidArgument() {
         TiddlyWiki tw = new TiddlyWiki();
         assertNotNull(tw);
-        try {
-            tw.addTiddler(null);
-            fail("IllegalArgumentException expected.");
-        } catch (IllegalArgumentException ex) {
-            assertTrue(true);
-        }
+        tw.addTiddler(null);
+        assertEquals(0, tw.listTiddlers().size());
     }
-    
+
+    @Test
     public void TiddlyWiki_addDefaultTiddler_InvalidArgument() {
         TiddlyWiki tw = new TiddlyWiki();
         assertNotNull(tw);
-        try {
-            tw.addDefaultTiddler(null);
-            fail("IllegalArgumentException expected.");
-        } catch (IllegalArgumentException ex) {
-            assertTrue(true);
-        }
+        tw.addDefaultTiddler(null);
+        assertNotNull(tw.getDefaultTiddler());
     }
-    
-  
+
+    @Test
     public void TiddlyWiki_addMainMenuTiddler_InvalidArgument() {
         TiddlyWiki tw = new TiddlyWiki();
         assertNotNull(tw);
-        try {
-            tw.addMainMenuTiddler(null);
-            fail("IllegalArgumentException expected.");
-        } catch (IllegalArgumentException ex) {
-            assertTrue(true);
-        }
+        tw.addMainMenuTiddler(null);
+        assertNotNull(tw.getMainMenuTiddler());
     }
-    
+
     @Test
     public void TiddlyWiki_addMainMenuTiddler_ParentIsNull() {
         TiddlyWiki tw = new TiddlyWiki();
         assertNotNull(tw);
-        
+
         Tiddler t1 = new Tiddler("Test1");
         tw.addMainMenuTiddler(t1);
-        
+
         Tiddler mainMenuTiddler = tw.getMainMenuTiddler();
         assertNull(mainMenuTiddler.getParent());
     }
-    
+
 }

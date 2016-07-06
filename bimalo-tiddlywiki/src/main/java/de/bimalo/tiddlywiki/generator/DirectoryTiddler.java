@@ -9,13 +9,11 @@ import de.bimalo.tiddlywiki.Tiddler;
  * <p>
  * See http://tiddlywiki.com for more information about TiddlyWiki and Tiddlers.</p>
  * <p>
- * This special Tiddler type for folders.</p>
+ * This is a special Tiddler type for folders.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @version 1.0
- * @since 1.7
  */
-public final class DirectoryTiddler extends Tiddler {
+final class DirectoryTiddler extends Tiddler {
 
     /**
      * The name of the file.
@@ -25,7 +23,7 @@ public final class DirectoryTiddler extends Tiddler {
     /**
      * Creates <code>FolderTiddler</code> with a default title.
      */
-    public DirectoryTiddler() {
+    DirectoryTiddler() {
         super();
     }
 
@@ -34,7 +32,7 @@ public final class DirectoryTiddler extends Tiddler {
      *
      * @param title the title, when null a default title is used
      */
-    public DirectoryTiddler(final String title) {
+    DirectoryTiddler(final String title) {
         super(title);
     }
 

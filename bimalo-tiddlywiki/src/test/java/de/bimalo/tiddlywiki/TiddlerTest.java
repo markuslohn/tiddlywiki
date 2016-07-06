@@ -15,8 +15,6 @@ import static org.junit.Assert.*;
  * A test case for <code>Tiddler</code>.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @since 1.0
- * @see Tiddler
  */
 public class TiddlerTest {
 
@@ -40,16 +38,6 @@ public class TiddlerTest {
     }
 
     @Test
-    public void Tidder_construct_InvalidArgument() {
-        try {
-            Tiddler t = new Tiddler(null);
-            assertTrue("IllegalArgumentException expected.", false);
-        } catch (IllegalArgumentException ex) {
-            assertTrue(true);
-        }
-    }
-
-    @Test
     public void Tiddler_construct_DefaultValues() {
         Tiddler t = new Tiddler();
         assertNotNull(t.getTitle());
@@ -65,6 +53,18 @@ public class TiddlerTest {
         assertNotNull(t.getCreateDate());
         assertNotNull(t.getModifier());
         assertNotNull(t.getCreator());
+    }
+
+    @Test
+    public void Tiddler_construct_nullTitle() {
+        Tiddler t = new Tiddler(null);
+        assertNotNull(t.getTitle());
+        assertNotNull(t.getCreateDate());
+        assertNotNull(t.getModifier());
+        assertNotNull(t.getCreator());
+
+        Tiddler t2 = new Tiddler("");
+        assertNotNull(t2.getTitle());
     }
 
     @Test
@@ -121,12 +121,8 @@ public class TiddlerTest {
     @Test
     public void Tiddler_addTiddler_InvalidArgument() {
         Tiddler t = new Tiddler();
-        try {
-            t.addTiddler(null);
-            assertTrue("IllegalArgumentException is expected.", false);
-        } catch (IllegalArgumentException ex) {
-            assertTrue(true);
-        }
+        t.addTiddler(null);
+        assertEquals(0, t.listTiddlers().size());
     }
 
     @Test
@@ -139,11 +135,22 @@ public class TiddlerTest {
 
         assertEquals(1, t.listTiddlers().size());
         assertEquals(t2, t.listTiddlers().get(0));
+        assertEquals(t, t2.getParent());
 
         Tiddler t3 = new Tiddler("t3");
         t.addTiddler(t3);
         assertEquals(2, t.listTiddlers().size());
         assertEquals(t3, t.listTiddlers().get(1));
+        assertEquals(t, t3.getParent());
+    }
+
+    @Test
+    public void Tiddler_addTiddler_ReservedTiddler() {
+        Tiddler defaultTiddler = Tiddler.createDefaultTiddler();
+
+        Tiddler t2 = new Tiddler("t2");
+        defaultTiddler.addTiddler(t2);
+        assertNull(t2.getParent());
     }
 
     @Test
@@ -187,22 +194,32 @@ public class TiddlerTest {
     @Test
     public void Tiddler_addTag_InvalidArgument() {
         Tiddler t = new Tiddler();
-        try {
-            t.addTag(null);
-            assertTrue("IllegalArgumentException is expected.", false);
-        } catch (IllegalArgumentException ex) {
-            assertTrue(true);
-        }
+        t.addTag(null);
+        assertEquals(0, t.getTags().size());
+
+        t.addTag("");
+        assertEquals(0, t.getTags().size());
     }
 
     @Test
-    public void Tiddler_addTag_NewTiddler() {
+    public void Tiddler_addTag_ValidTags() {
         Tiddler t = new Tiddler("t");
         assertEquals(0, t.getTags().size());
         t.addTag("tag1");
         assertEquals(1, t.getTags().size());
         t.addTag("tag2");
         assertEquals(2, t.getTags().size());
+    }
+
+    @Test
+    public void Tiddler_addTag_ReservedTiddler() {
+        Tiddler defaultTiddler = Tiddler.createDefaultTiddler();
+        try {
+            defaultTiddler.addTag("tag1");
+            fail("IllegalArgumentException expected.");
+        } catch (IllegalArgumentException ex) {
+            assertTrue(true);
+        }
     }
 
     @Test

@@ -11,8 +11,6 @@ import org.apache.commons.vfs2.FileType;
  * meta data for a simple text file.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @version 1.0
- * @since 1.7
  */
 class TextDocumentProperties extends FileObjectProperties {
 

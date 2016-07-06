@@ -22,7 +22,6 @@ import static org.mockito.Mockito.*;
  * A test case for <code>DirectoryProperties</code>.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @since 1.7
  * @see DirectoryProperties
  */
 public class DirectoryPropertiesTest {

@@ -8,8 +8,8 @@ import org.apache.commons.vfs2.FileNotFolderException;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileType;
 import org.apache.tika.Tika;
-import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.metadata.TikaCoreProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +21,6 @@ import org.slf4j.LoggerFactory;
  * The meta data for a file will be extracted with Apache Tika framework.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
- * @version 1.0
- * @since 1.7
  * @see org.apache.tika.Tika
  */
 class BinaryDocumentProperties extends FileObjectProperties {
@@ -30,9 +28,9 @@ class BinaryDocumentProperties extends FileObjectProperties {
     /**
      * Logger definition for this object.
      */
-    private final Logger logger = LoggerFactory.getLogger(BinaryDocumentProperties.class);
+   private static final Logger LOGGER  = LoggerFactory.getLogger(BinaryDocumentProperties.class);
     /**
-     * Special logger for parsing errors with Apache Tika Parsers.
+     * Special LOGGER for parsing errors with Apache Tika Parsers.
      */
     private final Logger notParsableDocumentsLogger
             = LoggerFactory.getLogger("de.bimalo.tiddlywiki.NotParsableDocuments");
@@ -60,35 +58,29 @@ class BinaryDocumentProperties extends FileObjectProperties {
 
     @Override
     protected void loadMetadata(FileObject file) throws IOException {
-        /**
-         * 23.06.2014 mlohn Cannot use vfs-API because the generated InputStream
-         * cannot be used by Tika without stream closed exception.
-         */
         FileContent content = file.getContent();
         InputStream is = content.getInputStream();
 
-        //InputStream is = new FileInputStream(file.getName().getPath());
         try {
-            logger.trace("Load meta data for file {}...", file.getName().getPath());
+            LOGGER.trace("Load meta data for file {}...", file.getName().getPath());
             Metadata md = new Metadata();
 
             Tika tikaService = new Tika();
             tikaService.setMaxStringLength(DEFAULT_MAXSTRINGLENGTH);
-            String text = tikaService.parseToString(is, md);
-            parseText(text);
+            tikaService.parseToString(is, md);
 
             parseTitle(md);
             parseSubject(md);
             parseAuthor(md);
             parseDescription(md);
             parseKeywords(md);
-            logger.trace("Done.");
+            LOGGER.trace("Done loading meta data.");
         } catch (Throwable th) {
             notParsableDocumentsLogger.info(file.getName().getPath());
-            logger.error("DocumentProperties: Could not load metadata for file {}, because of {}.",
+            LOGGER.error("DocumentProperties: Could not load metadata for file {}, because of {}.",
                     file.getName().getPath(), th.getMessage());
-            if (logger.isTraceEnabled()) {
-                logger.trace(th.getMessage(), th);
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace(th.getMessage(), th);
             }
         } finally {
             IOUtilities.closeInputStream(is);
@@ -174,5 +166,4 @@ class BinaryDocumentProperties extends FileObjectProperties {
         }
         addText(sb.toString());
     }
-
 }
