@@ -16,7 +16,6 @@
     <apache-tika-version>1.15</apache-tika-version>
     <apache-freemarker-version>2.3.26-incubating</apache-freemarker-version>     
     <apache-vfs-version>2.1</apache-vfs-version>     
-    <apache-commons-lang-version>2.6</apache-commons-lang-version>    
   </properties>
   <dependencies>
     <dependency>
