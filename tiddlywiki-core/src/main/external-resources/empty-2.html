@@ -1,0 +1,27 @@
+
+<@tiddlersgenerator tiddlers=rootTiddlers/>
+
+<#macro tiddlersgenerator tiddlers>
+     <#if tiddlers??>
+            <#list tiddlers as tiddler>
+               <#local tags="">
+               <#list tiddler.tags as tag>
+                 <#local tags=tags + tag>
+               </#list>
+
+              <div created="20170218231956144" modified="20170218232025103" tags="${tags}" title="${tiddler.title}" type="<#if tiddler.contentType??>${tiddler.contentType}</#if>">
+                   <pre>
+                     Parent
+                     <#if tiddler.parent??>
+                        ${tiddler.parent.title}
+                     </#if>
+
+                     <#if tiddler.text??>${tiddler.text}</#if>
+                   </pre>
+              </div>
+              <#if tiddler.tiddlers??>
+                 <@tiddlersgenerator tiddlers=tiddler.tiddlers/>
+              </#if>
+            </#list>
+    </#if>
+</#macro>
