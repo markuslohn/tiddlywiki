@@ -41,7 +41,7 @@ public final class TiddlyWikiGenerator {
   /**
    * Logger instance.
    */
-  private static Logger logger = LoggerFactory.getLogger(TiddlyWikiGenerator.class);
+  private static Logger LOGGER = LoggerFactory.getLogger(TiddlyWikiGenerator.class);
 
   /**
    * Name of the argument for the root folder.
@@ -117,24 +117,24 @@ public final class TiddlyWikiGenerator {
    */
   public void run() {
     try {
-      logger.info("Start analyzing from {}...", rootFolder.getName().getPath());
+      LOGGER.info("Start analyzing from {}...", rootFolder.getName().getPath());
       FilesystemTreeWalker traverser = new FilesystemTreeWalker(rootFolder);
       traverser.setMaxLevel(maxLevel);
       TiddlyWiki tw = traverser.walkFileTree();
-      logger.info("Done.");
+      LOGGER.info("Done.");
 
-      /* Create and adjust the configuration singleton */
-      Configuration cfg = new Configuration(Configuration.VERSION_2_3_25);
-      cfg.setDirectoryForTemplateLoading(new File("/Users/mlohn/Downloads"));
+      LOGGER.info("Create configuration for template engine...");
+      Configuration cfg = new Configuration(Configuration.VERSION_2_3_26);
+      cfg.setDirectoryForTemplateLoading(new File(templateFile.getName().getParent().getPath()));
       cfg.setDefaultEncoding("UTF-8");
       cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
       cfg.setLogTemplateExceptions(false);
+      Template temp = cfg.getTemplate(templateFile.getName().getBaseName());
+      LOGGER.info("Done.");
 
-      Template temp = cfg.getTemplate("empty-2.html");
-
+      LOGGER.info("Write TiddlyWiki to file {}...", resultFile.getName().getPath());
       Writer out = null;
       try {
-        logger.info("Write TiddlyWiki to file {}...", resultFile.getName().getPath());
         out = new OutputStreamWriter(new FileOutputStream(resultFile.getName().getPath()));
         Map root = new HashMap();
         root.put("rootTiddlers", tw.listTiddlers());
@@ -142,7 +142,7 @@ public final class TiddlyWikiGenerator {
       } finally {
         StreamUtilities.closeWriter(out);
       }
-      logger.info("Done.");
+      LOGGER.info("TiddlyWikie successfully written to {}.", resultFile.getName().getPath());
     } catch (Exception ex) {
       throw new RuntimeException(ex);
     }
@@ -167,7 +167,7 @@ public final class TiddlyWikiGenerator {
     sb.append("Example: \n");
     sb.append("./tw -rootFolder=<value> -templateFile=<value> -resultFile=<value> \n");
     try {
-      out.write(sb.toString().getBytes());
+      out.write(sb.toString().getBytes("UTF8"));
     } catch (Exception ex) {
       System.out.println(ex.getMessage());
       System.out.println(sb.toString());
@@ -184,7 +184,7 @@ public final class TiddlyWikiGenerator {
     FileSystemManager fsManager = VFS.getManager();
 
     String resultFileName = arguments.get(RESULTFILE_ARGUMENT);
-    logger.trace("resultFile= {}.", resultFileName);
+    LOGGER.trace("resultFile= {}.", resultFileName);
     resultFile = fsManager.resolveFile(resultFileName);
   }
 
@@ -198,7 +198,7 @@ public final class TiddlyWikiGenerator {
     FileSystemManager fsManager = VFS.getManager();
 
     String templateFileName = arguments.get(TEMPLATEFILE_ARGUMENT);
-    logger.trace("tempalteFileName= {}.", templateFileName);
+    LOGGER.trace("tempalteFileName= {}.", templateFileName);
     templateFile = fsManager.resolveFile(templateFileName);
     if (!templateFile.exists()) {
       throw new IllegalArgumentException(templateFile + " doesn't exist.");
@@ -215,7 +215,7 @@ public final class TiddlyWikiGenerator {
     FileSystemManager fsManager = VFS.getManager();
 
     String rootFolderName = arguments.get(ROOTFOLDER_ARGUMENT);
-    logger.trace("rootFolderName= {}.", rootFolderName);
+    LOGGER.trace("rootFolderName= {}.", rootFolderName);
     rootFolder = fsManager.resolveFile(rootFolderName);
     if (!rootFolder.exists()) {
       throw new IllegalArgumentException(rootFolderName + " doesn't exist.");
@@ -230,12 +230,12 @@ public final class TiddlyWikiGenerator {
    */
   private void initMaxLevelArgument(Map<String, String> arguments) {
     String maxLevelParamValue = arguments.get(MAXLEVEL_ARGUMENT);
-    logger.trace("maxLevel= {}.", maxLevelParamValue);
+    LOGGER.trace("maxLevel= {}.", maxLevelParamValue);
     if (maxLevelParamValue != null && !maxLevelParamValue.isEmpty()) {
       try {
         maxLevel = Integer.parseInt(maxLevelParamValue);
       } catch (Exception ex) {
-        logger.warn("Parameter maxLevel not set because of ", ex);
+        LOGGER.warn("Parameter maxLevel not set because of ", ex);
       }
     }
   }
@@ -248,11 +248,14 @@ public final class TiddlyWikiGenerator {
   public static void main(String[] args) {
     VersionInfo vInfo = new VersionInfo();
     System.out.println("TiddlyWiki Generator " + vInfo.getVersionNumberString());
+    LOGGER.info("TiddlyWiki Generator " + vInfo.getVersionNumberString());
 
     if (args != null) {
       System.out.println("Arguments:");
+      LOGGER.info("Arguments: ");
       for (int i = 0; i < args.length; i++) {
         System.out.println(args[i]);
+        LOGGER.info(args[i]);
       }
     }
 
@@ -266,10 +269,12 @@ public final class TiddlyWikiGenerator {
       TiddlyWikiGenerator twgen = new TiddlyWikiGenerator(cmdParser.getArgumentValues());
       twgen.run();
     } catch (IllegalArgumentException ex) {
+      LOGGER.error(ex.getMessage());
       System.err.println(ex.getMessage());
       TiddlyWikiGenerator.printUsage(System.err);
     } finally {
       timerec.stop();
+      LOGGER.info(timerec.toString());
       System.out.println(timerec);
     }
   }
