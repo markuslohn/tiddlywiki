@@ -1,5 +1,7 @@
-package de.bimalo.tiddlywiki.generator;
+package de.bimalo.tiddlywiki.fs;
 
+import de.bimalo.tiddlywiki.fs.TextDocumentProperties;
+import de.bimalo.tiddlywiki.fs.FileObjectProperties;
 import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.List;

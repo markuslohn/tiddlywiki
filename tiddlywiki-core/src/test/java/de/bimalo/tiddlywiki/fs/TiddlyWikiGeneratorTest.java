@@ -1,4 +1,4 @@
-package de.bimalo.tiddlywiki.generator;
+package de.bimalo.tiddlywiki.fs;
 
 import de.bimalo.tiddlywiki.common.CommandLineParser;
 import org.junit.After;

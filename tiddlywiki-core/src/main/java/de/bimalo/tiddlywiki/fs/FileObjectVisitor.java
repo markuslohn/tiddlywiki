@@ -1,4 +1,4 @@
-package de.bimalo.tiddlywiki.generator;
+package de.bimalo.tiddlywiki.fs;
 
 import java.io.IOException;
 import org.apache.commons.vfs2.FileObject;

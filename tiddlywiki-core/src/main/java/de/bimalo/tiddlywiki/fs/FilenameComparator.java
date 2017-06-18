@@ -1,4 +1,4 @@
-package de.bimalo.tiddlywiki.generator;
+package de.bimalo.tiddlywiki.fs;
 
 import java.io.Serializable;
 import java.util.Comparator;

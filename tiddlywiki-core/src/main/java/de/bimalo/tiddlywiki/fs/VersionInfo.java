@@ -1,4 +1,4 @@
-package de.bimalo.tiddlywiki.generator;
+package de.bimalo.tiddlywiki.fs;
 
 import java.awt.Button;
 import java.awt.Dimension;

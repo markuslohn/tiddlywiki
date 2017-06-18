@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath de.bimalo.tiddlywiki.TiddlyWikiGenerator -rootFolder=/mnt/Share/A -resultFile=/mnt/Share/A/index.html "-templateFile=/home/oracle/Documents/TiddlyWiki/bin/empty.html"</exec.args>
+                <exec.args>-classpath %classpath de.bimalo.tiddlywiki.TiddlyWikiGenerator "-rootFolder=/Users/mlohn/Library/Mobile Documents/com~apple~CloudDocs/Referenz" -templateFile=test -resultFile=test</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
@@ -24,7 +24,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath de.bimalo.tiddlywiki.TiddlyWikiGenerator -rootFolder=/mnt/Share/A -resultFile=/mnt/Share/A/index.html "-templateFile=/home/oracle/Documents/TiddlyWiki/bin/empty.html"</exec.args>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath de.bimalo.tiddlywiki.TiddlyWikiGenerator "-rootFolder=/Users/mlohn/Library/Mobile Documents/com~apple~CloudDocs/Referenz" -templateFile=test -resultFile=test</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
             </properties>
@@ -39,8 +39,24 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath de.bimalo.tiddlywiki.TiddlyWikiGenerator -rootFolder=/mnt/Share/A -resultFile=/mnt/Share/A/index.html "-templateFile=/home/oracle/Documents/TiddlyWiki/bin/empty.html"</exec.args>
+                <exec.args>-classpath %classpath de.bimalo.tiddlywiki.TiddlyWikiGenerator "-rootFolder=/Users/mlohn/Library/Mobile Documents/com~apple~CloudDocs/Referenz" -templateFile=test -resultFile=test</exec.args>
                 <exec.executable>java</exec.executable>
+            </properties>
+        </action>
+        <action>
+            <actionName>debug.single.main</actionName>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath ${packageClassName} -rootFolder="/Users/mlohn/Library/Mobile Documents/com~apple~CloudDocs/Referenz/A" -templateFile=/Users/mlohn/Downloads/empty-2.html -resultFile=/Users/mlohn/Downloads/result.html</exec.args>
+                <exec.executable>java</exec.executable>
+                <exec.classpathScope>${classPathScope}</exec.classpathScope>
+                <jpda.listen>true</jpda.listen>
             </properties>
         </action>
     </actions>

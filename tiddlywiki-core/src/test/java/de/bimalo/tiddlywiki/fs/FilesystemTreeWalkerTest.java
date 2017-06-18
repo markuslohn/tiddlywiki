@@ -1,5 +1,6 @@
-package de.bimalo.tiddlywiki.generator;
+package de.bimalo.tiddlywiki.fs;
 
+import de.bimalo.tiddlywiki.fs.FilesystemTreeWalker;
 import de.bimalo.tiddlywiki.Tiddler;
 import de.bimalo.tiddlywiki.TiddlyWiki;
 import java.io.IOException;
