@@ -267,6 +267,7 @@ public class DirectoryPropertiesTest {
             assertNotEquals(description, description2);
 
             Date lastModifyDate = properties.getLastModifyDate();
+            String doSomethingBeforeNextStep="xx";
             lastModifyDate = new Date();
             Date lastModifyDate2 = properties.getLastModifyDate();
             assertNotEquals(lastModifyDate, lastModifyDate2);
