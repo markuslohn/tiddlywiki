@@ -50,21 +50,21 @@ class BinaryDocumentProperties extends FileObjectProperties {
       throw new FileNotFolderException(file);
     }
   }
-
+  
   @Override
   protected void loadMetadata(FileObject file) throws IOException {
     FileContent content = file.getContent();
     InputStream is = content.getInputStream();
-
+    
     try {
       LOGGER.debug("Load meta data for file {}...", file.getName().getPath());
       Metadata md = new Metadata();
-
+      
       Tika tikaService = new Tika();
       tikaService.setMaxStringLength(DEFAULT_MAXSTRINGLENGTH);
       tikaService.parseToString(is, md);
-
-      parseTitle(md);
+      
+      super.parseTitle(file.getName().getBaseName());
       parseSubject(md);
       parseAuthor(md);
       parseDescription(md);
@@ -154,7 +154,7 @@ class BinaryDocumentProperties extends FileObjectProperties {
       if (found) {
         i--;
       }
-
+      
     }
     addText(sb.toString());
   }

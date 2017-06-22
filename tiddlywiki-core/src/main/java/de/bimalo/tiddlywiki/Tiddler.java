@@ -139,6 +139,21 @@ public class Tiddler implements Comparable<Tiddler> {
   }
 
   /**
+   * Returns a unique identifier for this Tiddler.
+   *
+   * @return a unique title
+   */
+  public String getUniqueTitle() {
+    StringBuilder sb = new StringBuilder();
+    if (parent != null) {
+      sb.append(parent.getTitle());
+      sb.append(" - ");
+    }
+    sb.append(title);
+    return sb.toString();
+  }
+
+  /**
    * Adds a Tiddler to this Tiddler. This Tiddler becomes automatically the
    * Parent-Tiddler of the provided Tiddler.
    *

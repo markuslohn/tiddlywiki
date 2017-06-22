@@ -123,12 +123,9 @@ final class FilesystemTreeWalker {
   public TiddlyWiki walkFileTree() throws IOException {
     LOGGER.debug("walkFileTree starting with {}...", rootFolder.getName().getPath());
     rootTiddler = createTiddler(rootFolder);
-    tagCloudTiddler = createTagCloudTiddler();
-
     wiki = createTiddlyWiki(rootTiddler);
-    wiki.addDefaultTiddler(tagCloudTiddler);
 
-    walkFileTree(rootFolder, rootTiddler, 0);
+    walkFileTree(rootFolder, wiki, 0);
 
     LOGGER.debug("Done walkFileTree.");
     return wiki;
@@ -139,11 +136,11 @@ final class FilesystemTreeWalker {
    * corresponding Tiddler's.
    *
    * @param parentFolder the parent folder
-   * @param parentTiddler the Tiddler represents the parent folder
+   * @param TiddlyWiki the generated TiddlyWiki
    * @param level the current hierarchy level
    * @throws IOException if traversal failed for some reason
    */
-  private void walkFileTree(FileObject parentFolder, Tiddler parentTiddler, int level)
+  private void walkFileTree(FileObject parentFolder, TiddlyWiki wiki, int level)
     throws IOException {
     LOGGER.debug("walkFileTree {}...", parentFolder.getName().getPath());
 
@@ -152,18 +149,16 @@ final class FilesystemTreeWalker {
 
       for (FileObject child : children) {
         LOGGER.trace("Analyze file {}...", child.getName().getPath());
-        if (!child.isHidden() && isSupportedFileType(child)) {
-          Tiddler tiddler = createTiddler(child);
-          parentTiddler.addTiddler(tiddler);
-
-          if (isDirectory(child)) {
+        if (!child.isHidden()) {
+          if (isFile(child)) {
+            Tiddler tiddler = createTiddler(child);
+            wiki.addTiddler(tiddler);
             if (level == 0) {
-              LOGGER.trace("Adds tiddler {} to main menu.", tiddler.getTitle());
-              wiki.addMainMenuTiddler(tiddler);
+              wiki.addDefaultTiddler(tiddler);
             }
-
+          } else if (isDirectory(child)) {
             level++;
-            walkFileTree(child, tiddler, level);
+            walkFileTree(child, wiki, level);
             level--;
           }
         }
@@ -183,6 +178,17 @@ final class FilesystemTreeWalker {
    */
   private boolean isDirectory(FileObject file) throws FileSystemException {
     return file.getType().equals(FileType.FOLDER);
+  }
+
+  /**
+   * Checks if the given FileObject is a file.
+   *
+   * @param file the FileObject to check
+   * @return true=it is a file otherwise false
+   * @throws FileSystemException if operation fails
+   */
+  private boolean isFile(FileObject file) throws FileSystemException {
+    return file.getType().equals(FileType.FILE);
   }
 
   /**
@@ -228,18 +234,6 @@ final class FilesystemTreeWalker {
       visitor = directoryVisitor;
     }
     return visitor;
-  }
-
-  /**
-   * Creates a special Tiddler implementing a tag cloud for all available
-   * Tiddler's in the TiddlyWiki file. Needs the TagCloud plugin.
-   *
-   * @return Tiddler providing a tag cloud
-   */
-  private Tiddler createTagCloudTiddler() {
-    Tiddler tiddler = new Tiddler("TagCloud");
-    tiddler.setText("&lt;&lt;cloud limit:10 systemConfig excludeMissing script&gt;&gt;");
-    return tiddler;
   }
 
   /**

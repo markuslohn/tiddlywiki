@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath de.bimalo.tiddlywiki.generator.TiddlyWikiGenerator -rootFolder="/Users/mlohn/Library/Mobile Documents/com~apple~CloudDocs/Referenz/B" -templateFile="/Users/mlohn/Downloads/empty-2.html" -resultFile=/Users/mlohn/Downloads/testresult.html</exec.args>
+                <exec.args>-classpath %classpath de.bimalo.tiddlywiki.fs.TiddlyWikiGenerator -rootFolder="/Users/mlohn/Documents/Archiv" -templateFile="/Users/mlohn/Sourcecode/bimalo/tiddlywiki-core/src/main/external-resources/default-template.html" -resultFile=/Users/mlohn/Downloads/testresult.html</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
@@ -24,7 +24,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath de.bimalo.tiddlywiki.generator.TiddlyWikiGenerator -rootFolder="/Users/mlohn/Library/Mobile Documents/com~apple~CloudDocs/Referenz/B" -templateFile="/Users/mlohn/Downloads/empty-2.html" -resultFile=/Users/mlohn/Downloads/testresult.html</exec.args>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath de.bimalo.tiddlywiki.fs.TiddlyWikiGenerator -rootFolder="/Users/mlohn/Documents/Archiv" -templateFile="/Users/mlohn/Sourcecode/bimalo/tiddlywiki-core/src/main/external-resources/default-template.html" -resultFile=/Users/mlohn/Downloads/testresult.html</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
             </properties>
@@ -39,7 +39,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath de.bimalo.tiddlywiki.generator.TiddlyWikiGenerator -rootFolder="/Users/mlohn/Library/Mobile Documents/com~apple~CloudDocs/Referenz/B" -templateFile="/Users/mlohn/Downloads/empty-2.html" -resultFile=/Users/mlohn/Downloads/testresult.html</exec.args>
+                <exec.args>-classpath %classpath de.bimalo.tiddlywiki.fs.TiddlyWikiGenerator -rootFolder="/Users/mlohn/Documents/Archiv" -templateFile="/Users/mlohn/Sourcecode/bimalo/tiddlywiki-core/src/main/external-resources/default-template.html" -resultFile=/Users/mlohn/Downloads/testresult.html</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>

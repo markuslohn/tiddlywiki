@@ -1,9 +1,11 @@
 package de.bimalo.tiddlywiki.fs;
 
 import de.bimalo.tiddlywiki.Tiddler;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.vfs2.FileNotFolderException;
 import org.apache.commons.vfs2.FileObject;
@@ -135,10 +137,9 @@ final class DocumentVisitor implements FileObjectVisitor {
     List<String> keywords = new ArrayList(properties.getKeywords());
 
     FileObject parent = file.getParent();
-    if (parent != null) {
-      String parentName = parent.getName().getBaseName();
-      keywords.remove(parentName);
-    }
+    String absolutePath = parent.getName().getPath();
+    String[] pathNames = absolutePath.split(File.separator);
+    keywords.addAll(Arrays.asList(pathNames));
 
     return keywords;
   }

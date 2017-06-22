@@ -137,6 +137,9 @@ public final class TiddlyWikiGenerator {
       try {
         out = new OutputStreamWriter(new FileOutputStream(resultFile.getName().getPath()));
         Map root = new HashMap();
+        root.put("title", tw.getTitle());
+        root.put("subTitle", tw.getSubTitle());
+        root.put("defaultTiddlers", tw.getDefaultTiddler().getTiddlers());
         root.put("rootTiddlers", tw.listTiddlers());
         temp.process(root, out);
       } finally {

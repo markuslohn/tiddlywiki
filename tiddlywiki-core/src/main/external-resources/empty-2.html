@@ -1,15 +1,28 @@
 
 <@tiddlersgenerator tiddlers=rootTiddlers/>
 
+<#setting datetime_format="yyyyMMddHHmmssS">
+<#setting locale="en_US">
+
 <#macro tiddlersgenerator tiddlers>
-     <#if tiddlers??>
+    <#if tiddlers??>
+            <#local currentTime = .now>
             <#list tiddlers as tiddler>
                <#local tags="">
                <#list tiddler.tags as tag>
-                 <#local tags=tags + tag>
+                 <#if tag?is_last>
+                   <#local tags=tags + tag>
+                 <#else>
+                   <#local tags=tags + tag + " ">
+                 </#if>
                </#list>
 
-              <div created="20170218231956144" modified="20170218232025103" tags="${tags}" title="${tiddler.title}" type="<#if tiddler.contentType??>${tiddler.contentType}</#if>">
+            <#if tiddler.contentType?? && (tiddler.contentType?string?contains("pdf") || tiddler.contentType?string?contains("jpg") || tiddler.contentType?string?contains("jpeg") || tiddler.contentType?string?contains("png") || tiddler.contentType?string?contains("gif"))>
+               <div _canonical_uri="${tiddler.path}" created="${tiddler.createDate?datetime}" modified="${currentTime?datetime}" tags="${tags}" title="${tiddler.title}" type="<#if tiddler.contentType??>${tiddler.contentType}</#if>">
+                   <pre>
+                   </pre>
+            <#else>
+               <div created="${tiddler.createDate?datetime}" modified="${currentTime?datetime}" tags="${tags}" title="${tiddler.title}" type="<#if tiddler.contentType??>${tiddler.contentType}</#if>">
                    <pre>
                      Parent
                      <#if tiddler.parent??>
@@ -18,6 +31,7 @@
 
                      <#if tiddler.text??>${tiddler.text}</#if>
                    </pre>
+            </#if>
               </div>
               <#if tiddler.tiddlers??>
                  <@tiddlersgenerator tiddlers=tiddler.tiddlers/>
