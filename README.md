@@ -48,9 +48,9 @@ bimalo-tiddlywiki
     mvn install -Psourcecheck
 
 ### Distribution
-    mvn assembly:single
+    mvn package
 
-**Note:** The distribution is available in the /target folder.
+**Note:** The distribution will be generated automatically with the assembly plugin and is available in the /target folder.
 
 ## Release
 
