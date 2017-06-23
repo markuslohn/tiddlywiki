@@ -4,8 +4,9 @@ A small utility to generate a [Tiddlywiki](http://tiddlywiki.com) file based on 
 generates a Tiddler for every found file. The folder names are used to generate tags for the files.
 
 It uses the following frameworks:
-- [Apache Commons Virtual File System](https://commons.apache.org/proper/commons-vfs/): Used to walk trough the file system.
-- [Apache Freemarker](http://freemarker.org): A template engine used to generate the TiddlyWiki file.
+
+* [Apache Commons Virtual File System](https://commons.apache.org/proper/commons-vfs/): Used to walk trough the file system.
+* [Apache Freemarker](http://freemarker.org): A template engine used to generate the TiddlyWiki file.
 
 The project contains the following modules
 
@@ -22,9 +23,9 @@ bimalo-tiddlywiki
 |--bin    
 |---- tw.sh  
 |---- default-template.html  
-|---- log4j.properties
+|---- log4j.properties  
 |--lib  
-|----- bimalo-tiddlywiki-XXX.jar
+|----- bimalo-tiddlywiki-XXX.jar  
 |--log  
 
 
