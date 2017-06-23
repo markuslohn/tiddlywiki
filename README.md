@@ -23,6 +23,7 @@ bimalo-tiddlywiki
 |--bin    
 |---- tw.sh  
 |---- default-template.html  
+|--config  
 |---- log4j.properties  
 |--lib  
 |----- bimalo-tiddlywiki-XXX.jar  
