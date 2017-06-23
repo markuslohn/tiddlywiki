@@ -9,7 +9,7 @@
   <includeSiteDirectory>false</includeSiteDirectory>
   <fileSets>
     <fileSet>
-      <directory>tiddlywiki-core/target</directory>
+      <directory>target</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
         <include>bimalo-tiddlywiki-*.jar</include>
