@@ -251,6 +251,7 @@ abstract class FileObjectProperties {
                      * description
            */
           default:
+            addDescription(line);
             addText(line);
         }
       }

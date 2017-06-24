@@ -116,7 +116,7 @@ final class DocumentVisitor implements FileObjectVisitor {
       text.append("\n\n");
     }
 
-    text.append("[ext[");
+    text.append("[[");
     text.append(file.getName().getBaseName()).append("|").append(file.getName().getURI());
     text.append("]]\n");
     text.append("\n");
