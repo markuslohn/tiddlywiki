@@ -99,6 +99,13 @@ abstract class FileObjectProperties {
         contentType = contentInfo.getContentType();
       }
     }
+    String ext = file.getName().getExtension();
+    if (ext != null && ext.equalsIgnoreCase("md")) {
+      contentType = "text/x-markdown";
+    }
+    if (contentType == null || contentType.isEmpty()) {
+      contentType = "text/vnd.tiddlywiki";
+    }
     if (encoding == null || encoding.isEmpty()) {
       encoding = java.nio.charset.Charset.defaultCharset().toString();
     }
