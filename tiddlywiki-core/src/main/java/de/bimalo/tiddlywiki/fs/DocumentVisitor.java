@@ -59,8 +59,10 @@ final class DocumentVisitor implements FileObjectVisitor {
 
     LOGGER.debug("Read properties for file {}...", file.getName().getPath());
     String contentType = file.getContent().getContentInfo().getContentType();
+    String ext = file.getName().getExtension();
     LOGGER.trace("Content-Type= {}.", contentType);
-    if (contentType == null || contentType.equalsIgnoreCase("text/plain")) {
+    if ("text/plain".equalsIgnoreCase(contentType)
+      || ext.matches(FilesystemTreeWalker.TEXT_FILE_TYPES)) {
       properties = new TextDocumentProperties(file);
     } else {
       properties = new BinaryDocumentProperties(file);

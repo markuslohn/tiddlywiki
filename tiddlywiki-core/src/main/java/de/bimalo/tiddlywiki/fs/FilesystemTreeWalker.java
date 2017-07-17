@@ -29,6 +29,17 @@ import org.slf4j.LoggerFactory;
 final class FilesystemTreeWalker {
 
   /**
+   * A list of extensions of files supported by this generator.
+   */
+  public static final String SUPPORTED_FILE_TYPES = "md|rst|MD|RST|txt|TXT|pdf|"
+    + "PDF|doc|DOC|docx|ppt|PPT|pptx|xls|XLS|xlsx|itmz|xmind|jpg|png|PNG|JPG";
+
+  /**
+   * A list of extensions of text file types supported by this generator.
+   */
+  public static final String TEXT_FILE_TYPES = "md|rst|MD|RST|txt|TXT";
+
+  /**
    * Logger instance.
    */
   private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemTreeWalker.class);
@@ -52,7 +63,7 @@ final class FilesystemTreeWalker {
 
   /**
    * A reference to an existing folder in the file system used as starting
-   * point to search for content, like "/Documents/Reference"
+   * point to search for content, like "/Documents/Reference".
    */
   private FileObject rootFolder = null;
 
@@ -142,7 +153,7 @@ final class FilesystemTreeWalker {
    */
   private void walkFileTree(FileObject parentFolder, TiddlyWiki wiki, int level)
     throws IOException {
-    LOGGER.debug("walkFileTree {}...", parentFolder.getName().getPath());
+    LOGGER.info("walkFileTree {}...", parentFolder.getName().getPath());
 
     if (maxLevel < 0 || level < maxLevel) {
       List<FileObject> children = listAndSortChildrens(parentFolder);
@@ -188,7 +199,9 @@ final class FilesystemTreeWalker {
    * @throws FileSystemException if operation fails
    */
   private boolean isFile(FileObject file) throws FileSystemException {
-    return file.getType().equals(FileType.FILE);
+    String extension = file.getName().getExtension();
+    return file.getType().equals(FileType.FILE) && extension != null
+      && extension.matches(SUPPORTED_FILE_TYPES);
   }
 
   /**
@@ -198,7 +211,8 @@ final class FilesystemTreeWalker {
    * @param parentFolder the parent folder
    * @throws FileSystemException if operation failed
    */
-  private List<FileObject> listAndSortChildrens(FileObject parentFolder) throws FileSystemException {
+  private List<FileObject> listAndSortChildrens(FileObject parentFolder)
+    throws FileSystemException {
     List<FileObject> children = Arrays.asList(parentFolder.getChildren());
     Collections.sort(children, new FilenameComparator());
     return children;
@@ -263,45 +277,6 @@ final class FilesystemTreeWalker {
     wiki.setTitle(title);
     wiki.setSubtitle(subtitle);
     return wiki;
-  }
-
-  /**
-   * Checks whether the type of the given FileObject is supported or not.
-   *
-   * @param file the FileObject
-   * @return true=type is supported, otherwise false
-   * @throws FileSystemException if operation fails
-   */
-  private boolean isSupportedFileType(FileObject file) throws FileSystemException {
-    boolean supported = false;
-
-    if (file.getType().equals(FileType.FOLDER)) {
-      supported = true;
-    } else if (file.getType().equals(FileType.FILE)) {
-      String extension = file.getName().getExtension();
-      LOGGER.trace("Extension= {}", extension);
-      if (extension != null && extension.matches("(md|rst|txt|TXT|pdf|PDF|doc|DOC|docx"
-        + "|ppt|PPT|pptx|xls|XLS|xlsx|itmz|xmind|jpg|png|PNG|JPG)")) {
-        supported = true;
-      } else {
-        supported = false;
-      }
-      /**
-       * To avoid naming conflicts in the TiddlyWiki it is necessary, that
-       * the text file containing the meta data for folders will not be
-       * included in the TiddlyWiki. Due to this filter also these files.
-       */
-      String parentBaseName = file.getName().getParent().getBaseName();
-      String baseName = file.getName().getBaseName();
-      if (baseName.startsWith(parentBaseName)) {
-        supported = false;
-      } else {
-        supported = true;
-      }
-    }
-
-    LOGGER.trace("Supported FileObject {}.", supported);
-    return supported;
   }
 
 }

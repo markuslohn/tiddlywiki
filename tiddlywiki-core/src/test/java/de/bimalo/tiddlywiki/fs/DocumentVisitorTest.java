@@ -50,7 +50,7 @@ public class DocumentVisitorTest {
   public void DocumentVisitor_visit_MarkdownDocument() {
     FileObject document;
     try {
-      document = FileObjectFixture.getDocumentFileObject("test.md", "Testcontent", true);
+      document = FileObjectFixture.getDocumentFileObject("test.md", "test.md\n\nTestcontent", true);
 
       FileObjectVisitor visitor = new DocumentVisitor();
       Object result = visitor.visit(document);
@@ -75,7 +75,7 @@ public class DocumentVisitorTest {
   public void DocumentVisitor_visit_DocumentPropertiesNotAvailable() {
     FileObject document;
     try {
-      document = FileObjectFixture.getDocumentFileObject("test.txt", "Testcontent", true);
+      document = FileObjectFixture.getDocumentFileObject("test.txt", "test.txt\n\nTestcontent", true);
 
       FileObjectVisitor visitor = new DocumentVisitor();
       Object result = visitor.visit(document);

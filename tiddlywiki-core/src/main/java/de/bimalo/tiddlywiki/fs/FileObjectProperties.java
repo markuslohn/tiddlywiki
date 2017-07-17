@@ -103,7 +103,7 @@ abstract class FileObjectProperties {
     if (ext != null && ext.equalsIgnoreCase("md")) {
       contentType = "text/x-markdown";
     }
-    if (contentType == null || contentType.isEmpty()) {
+    if (contentType == null || contentType.isEmpty() || (ext != null && ext.equalsIgnoreCase("txt"))) {
       contentType = "text/vnd.tiddlywiki";
     }
     if (encoding == null || encoding.isEmpty()) {
