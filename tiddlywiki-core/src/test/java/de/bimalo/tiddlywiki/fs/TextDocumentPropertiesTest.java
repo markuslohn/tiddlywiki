@@ -127,6 +127,31 @@ public class TextDocumentPropertiesTest {
     }
   }
 
+  @Test
+  public void TextDocumentProperties_read_tags() {
+    try {
+      StringBuilder sb = new StringBuilder();
+      sb.append("Test").append("\n");
+      sb.append("A, B ,C, Altersvorsorge und Absicherung\n");
+      sb.append("First Line Description\n");
+      sb.append("Second Line Description\n");
+      String text = sb.toString();
+      FileObject file = getTextDocumentFileObject("TestOrdner", "/Referenz/T", text);
+      FileObjectProperties properties = new TextDocumentProperties(file);
+      properties.reload();
+
+      assertNull(properties.getAuthor());
+      assertEquals("Test", properties.getTitle());
+
+      List<String> keywords = properties.getKeywords();
+      assertEquals(4, keywords.size());
+      assertEquals("Altersvorsorge und Absicherung", keywords.get(3));
+
+    } catch (Exception ex) {
+      fail(ex.getMessage() + " is not expected.");
+    }
+  }
+
   private FileObject getTextDocumentFileObject(String name, String path, String text) throws FileSystemException {
     FileContent documentContent = mock(FileContent.class);
     when(documentContent.getInputStream()).thenReturn(new ByteArrayInputStream(text.getBytes()));

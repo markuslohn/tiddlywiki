@@ -47,10 +47,35 @@ public class DocumentVisitorTest {
   }
 
   @Test
+  public void DocumentVisitor_visit_MarkdownDocument() {
+    FileObject document;
+    try {
+      document = FileObjectFixture.getDocumentFileObject("test.md", "test.md\n\nTestcontent", true);
+
+      FileObjectVisitor visitor = new DocumentVisitor();
+      Object result = visitor.visit(document);
+      assertNotNull(result);
+      assertEquals(Tiddler.class.getName(), result.getClass().getName());
+
+      Tiddler tiddler = (Tiddler) result;
+      assertEquals("test.md", tiddler.getTitle());
+      assertNotNull(tiddler.getModifier());
+      assertNotNull(tiddler.getCreateDate());
+      assertNotNull(tiddler.getModifier());
+      assertNotNull(tiddler.getId());
+      assertNull(tiddler.getParent());
+      assertNotNull(tiddler.getContentType());
+      assertEquals("text/x-markdown", tiddler.getContentType());
+    } catch (Exception ex) {
+      assertTrue(ex.getMessage(), false);
+    }
+  }
+
+  @Test
   public void DocumentVisitor_visit_DocumentPropertiesNotAvailable() {
     FileObject document;
     try {
-      document = FileObjectFixture.getDocumentFileObject("test.txt", "Testcontent", true);
+      document = FileObjectFixture.getDocumentFileObject("test.txt", "test.txt\n\nTestcontent", true);
 
       FileObjectVisitor visitor = new DocumentVisitor();
       Object result = visitor.visit(document);

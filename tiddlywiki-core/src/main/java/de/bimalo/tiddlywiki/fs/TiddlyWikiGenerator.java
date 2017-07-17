@@ -92,17 +92,17 @@ public final class TiddlyWikiGenerator {
     Assert.isTrue(arguments.containsKey(ROOTFOLDER_ARGUMENT), "Argument rootFolder is missing.");
     Assert.isTrue(arguments.containsKey(TEMPLATEFILE_ARGUMENT), "Argument templateFile is missing.");
     Assert.isTrue(arguments.containsKey(RESULTFILE_ARGUMENT), "Argument resultFile is missing.");
-
+    
     try {
-
+      
       initRootFolderArgument(arguments);
-
+      
       initTemplateFileArgument(arguments);
-
+      
       initResultFileArgument(arguments);
-
+      
       initMaxLevelArgument(arguments);
-
+      
     } catch (IllegalArgumentException ex) {
       throw ex;
     } catch (FileSystemException ex) {
@@ -122,7 +122,7 @@ public final class TiddlyWikiGenerator {
       traverser.setMaxLevel(maxLevel);
       TiddlyWiki tw = traverser.walkFileTree();
       LOGGER.info("Done.");
-
+      
       LOGGER.info("Create configuration for template engine...");
       Configuration cfg = new Configuration(Configuration.VERSION_2_3_26);
       cfg.setDirectoryForTemplateLoading(new File(templateFile.getName().getParent().getPath()));
@@ -131,7 +131,7 @@ public final class TiddlyWikiGenerator {
       cfg.setLogTemplateExceptions(false);
       Template temp = cfg.getTemplate(templateFile.getName().getBaseName());
       LOGGER.info("Done.");
-
+      
       LOGGER.info("Write TiddlyWiki to file {}...", resultFile.getName().getPath());
       Writer out = null;
       try {
@@ -147,6 +147,7 @@ public final class TiddlyWikiGenerator {
       }
       LOGGER.info("TiddlyWikie successfully written to {}.", resultFile.getName().getPath());
     } catch (Exception ex) {
+      LOGGER.error(ex.getMessage(), ex);
       throw new RuntimeException(ex);
     }
   }
@@ -158,7 +159,7 @@ public final class TiddlyWikiGenerator {
    */
   public static void printUsage(OutputStream out) {
     Assert.notNull(out);
-
+    
     StringBuilder sb = new StringBuilder();
     sb.append(TiddlyWikiGenerator.class).append(" Usage: \n");
     sb.append("./tw -rootFolder=<value> -templateFile=<value> -resultFile=<value> \n");
@@ -185,7 +186,7 @@ public final class TiddlyWikiGenerator {
    */
   private void initResultFileArgument(Map<String, String> arguments) throws FileSystemException {
     FileSystemManager fsManager = VFS.getManager();
-
+    
     String resultFileName = arguments.get(RESULTFILE_ARGUMENT);
     LOGGER.trace("resultFile= {}.", resultFileName);
     resultFile = fsManager.resolveFile(resultFileName);
@@ -199,7 +200,7 @@ public final class TiddlyWikiGenerator {
    */
   private void initTemplateFileArgument(Map<String, String> arguments) throws FileSystemException {
     FileSystemManager fsManager = VFS.getManager();
-
+    
     String templateFileName = arguments.get(TEMPLATEFILE_ARGUMENT);
     LOGGER.trace("tempalteFileName= {}.", templateFileName);
     templateFile = fsManager.resolveFile(templateFileName);
@@ -216,7 +217,7 @@ public final class TiddlyWikiGenerator {
    */
   private void initRootFolderArgument(Map<String, String> arguments) throws FileSystemException {
     FileSystemManager fsManager = VFS.getManager();
-
+    
     String rootFolderName = arguments.get(ROOTFOLDER_ARGUMENT);
     LOGGER.trace("rootFolderName= {}.", rootFolderName);
     rootFolder = fsManager.resolveFile(rootFolderName);
@@ -252,7 +253,7 @@ public final class TiddlyWikiGenerator {
     VersionInfo vInfo = new VersionInfo();
     System.out.println("TiddlyWiki Generator " + vInfo.getVersionNumberString());
     LOGGER.info("TiddlyWiki Generator " + vInfo.getVersionNumberString());
-
+    
     if (args != null) {
       System.out.println("Arguments:");
       LOGGER.info("Arguments: ");
@@ -261,14 +262,14 @@ public final class TiddlyWikiGenerator {
         LOGGER.info(args[i]);
       }
     }
-
+    
     TimeRecorder timerec = new TimeRecorder("TiddlyWiki");
     timerec.start();
-
+    
     try {
       CommandLineParser cmdParser = new CommandLineParser();
       cmdParser.parseArguments(args);
-
+      
       TiddlyWikiGenerator twgen = new TiddlyWikiGenerator(cmdParser.getArgumentValues());
       twgen.run();
     } catch (IllegalArgumentException ex) {
@@ -281,5 +282,5 @@ public final class TiddlyWikiGenerator {
       System.out.println(timerec);
     }
   }
-
+  
 }

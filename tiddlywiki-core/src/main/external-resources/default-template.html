@@ -7686,7 +7686,7 @@ Error message and password prompt
 </#noparse>
         &quot;$:/DefaultTiddlers&quot;: {
             &quot;title&quot;: &quot;$:/DefaultTiddlers&quot;,
-            &quot;text&quot;: &quot;GettingStarted\n<#list defaultTiddlers as tiddler>${tiddler.title}\n</#list>&quot;
+            &quot;text&quot;: &quot;TableOfContents\n<#list defaultTiddlers as tiddler>${tiddler.title}\n</#list>&quot;
         },
 <#noparse>
         &quot;$:/temp/advancedsearch&quot;: {
@@ -9390,7 +9390,7 @@ This plugin also requires the JSZip plugin ([[$:/plugins/tiddlywiki/jszip]]) to 
 <div caption="Contents" created="20170624071646681" list-after="$:/core/ui/SideBar/Open" modified="20170624071756562" tags="$:/tags/SideBar" title="TableOfContents">
 <pre>&lt;div class=&quot;tc-table-of-contents&quot;&gt;
 
-&lt;&lt;toc-selective-expandable 'TableOfContents'&gt;&gt;
+&lt;&lt;toc-selective-expandable 'TableOfContents' 'sort[title]'&gt;&gt;
 
 &lt;/div&gt;</pre>
 </div>
@@ -11795,9 +11795,9 @@ if(typeof(exports) !== "undefined") {
                <#local tags="">
                <#list tiddler.tags as tag>
                  <#if tag?is_last>
-                   <#local tags=tags + tag>
+                   <#local tags=tags + "[[" + tag + "]]">
                  <#else>
-                   <#local tags=tags + tag + " ">
+                   <#local tags=tags + "[[" + tag + "]]" + " ">
                  </#if>
                </#list>
 
