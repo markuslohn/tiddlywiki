@@ -258,6 +258,9 @@ abstract class FileObjectProperties {
                      * description
            */
           default:
+            if (line.isEmpty()) {
+              line = "\n";
+            }
             addDescription(line);
             addText(line);
         }
@@ -309,7 +312,7 @@ abstract class FileObjectProperties {
         sb.append(this.description);
         sb.append("\n");
       }
-      sb.append(description);
+      sb.append(description.trim());
       this.description = sb.toString();
     }
   }
@@ -331,7 +334,7 @@ abstract class FileObjectProperties {
         sb.append(this.text);
         sb.append("\n");
       }
-      sb.append(text);
+      sb.append(text.trim());
       this.text = sb.toString();
     }
   }
