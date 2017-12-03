@@ -44,6 +44,11 @@
       <artifactId>freemarker</artifactId>
       <version>${apache-freemarker-version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.esotericsoftware.yamlbeans</groupId>
+      <artifactId>yamlbeans</artifactId>
+      <version>1.12</version>   
+    </dependency>    
   </dependencies>
   <build>
     <plugins>

@@ -7,6 +7,7 @@ It uses the following frameworks:
 
 * [Apache Commons Virtual File System](https://commons.apache.org/proper/commons-vfs/): Used to walk trough the file system.
 * [Apache Freemarker](http://freemarker.org): A template engine used to generate the TiddlyWiki file.
+* [Apache Tika](http://tika.apache.org): A library to parse and retrieve document contents and meta data. Extented with a YAML Front Matter Parser
 
 The project contains the following modules
 
@@ -38,6 +39,13 @@ bimalo-tiddlywiki
 |templateFile| The absolute path to an empty TiddlyWiki file.
 |resultFile| The absolute path to the result TiddlyWiki file.
 
+## YAML Front Matter
+
+The following attributes are supported:
+title
+description
+creator
+keywords
 
 ## Build
 

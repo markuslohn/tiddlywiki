@@ -1,7 +1,5 @@
 package de.bimalo.tiddlywiki.fs;
 
-import de.bimalo.tiddlywiki.fs.BinaryDocumentProperties;
-import de.bimalo.tiddlywiki.fs.FileObjectProperties;
 import java.io.ByteArrayInputStream;
 import java.util.Date;
 import org.apache.commons.vfs2.FileContent;
@@ -21,14 +19,14 @@ import static org.mockito.Mockito.when;
 
 /**
  * <p>
- * A test case for <code>DocumentProperties</code>.</p>
+ * A test case for <code>FileObjectProperties</code>.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
  * @see BinaryDocumentProperties
  */
-public class DocumentPropertiesTest {
+public class FileObjectPropertiesTest {
 
-    public DocumentPropertiesTest() {
+    public FileObjectPropertiesTest() {
     }
 
     @BeforeClass
@@ -48,11 +46,11 @@ public class DocumentPropertiesTest {
     }
 
     @Test
-    public void DocumentProperties_Construct_NoMetadata() {
+    public void FileObjectProperties_Construct_NoMetadata() {
         try {
             FileObject document = getDocumentFileObject("test.txt", "/Referenz/A/", "Testcontent");
 
-            FileObjectProperties properties = new BinaryDocumentProperties(document);
+            FileObjectProperties properties = new FileObjectProperties(document);
             properties.reload();
 
             assertNull(properties.getAuthor());
@@ -65,12 +63,12 @@ public class DocumentPropertiesTest {
     }
 
     @Test
-    public void DocumentProperties_construct_ChangePropertiesOutside() {
+    public void FileObjectProperties_construct_ChangePropertiesOutside() {
         FileObject document;
         try {
             document = getDocumentFileObject("test.txt", "/Referenz/A/", "Testcontent");
 
-            FileObjectProperties properties = new BinaryDocumentProperties(document);
+            FileObjectProperties properties = new FileObjectProperties(document);
             properties.reload();
             String author = properties.getAuthor();
             assertNull(author);
@@ -84,7 +82,7 @@ public class DocumentPropertiesTest {
     }
 
     @Test
-    public void DocumentProperties_Construct_InvalidFileObjectType() {
+    public void FileObjectProperties_Construct_InvalidFileObjectType() {
         try {
             Long lastModifiedTime = Long.valueOf(new Date().getTime());
             FileName name = mock(FileName.class);
@@ -96,7 +94,7 @@ public class DocumentPropertiesTest {
             when(document.getType()).thenReturn(FileType.FOLDER);
             when(document.getName()).thenReturn(name);
 
-            FileObjectProperties properties = new BinaryDocumentProperties(document);
+            FileObjectProperties properties = new FileObjectProperties(document);
             fail("A FileNotFolderException is expected to be thrown.");
         } catch (FileNotFolderException ex) {
             assertTrue(true);
@@ -106,9 +104,9 @@ public class DocumentPropertiesTest {
     }
 
     @Test
-    public void DocumentProperties_Construct_IllegalArgument() {
+    public void FileObjectProperties_Construct_IllegalArgument() {
         try {
-            FileObjectProperties properties = new BinaryDocumentProperties(null);
+            FileObjectProperties properties = new FileObjectProperties(null);
             fail("A IllegalArgumentException is expected to be thrown.");
         } catch (IllegalArgumentException ex) {
             assertTrue(true);
