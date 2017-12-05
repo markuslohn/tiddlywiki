@@ -18,6 +18,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
+import org.apache.tika.metadata.TikaCoreProperties;
 
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
@@ -55,7 +56,7 @@ public class FrontMatterParserTest {
       StringBuilder sb = new StringBuilder();
       sb.append("---\n");
       sb.append("title: testtitle\n");
-      sb.append("tags: [a,b,c,noch ein tag]\n");
+      sb.append("keywords: [a,b,c,noch ein tag]\n");
       sb.append("subtitle: untertitel\n");
       sb.append("sonstiges: xxx\n");
       sb.append("---\n");
@@ -72,9 +73,10 @@ public class FrontMatterParserTest {
       String content = tikaService.parseToString(is, metadata);
       assertNotNull(content);
       assertNotNull(metadata);
+     
       assertEquals("testtitle", metadata.get("title"));
-      assertTrue(metadata.isMultiValued("tags"));
-      String[] tagValues = metadata.getValues("tags");
+      assertTrue(metadata.isMultiValued("keywords"));
+      String[] tagValues = metadata.getValues("keywords");
       assertEquals(4, tagValues.length);
 
       System.out.println(metadata);
