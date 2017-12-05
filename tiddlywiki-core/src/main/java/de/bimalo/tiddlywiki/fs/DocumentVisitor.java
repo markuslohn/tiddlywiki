@@ -120,6 +120,10 @@ final class DocumentVisitor implements FileObjectVisitor {
         tiddler.setText(text);
         tiddler.setPath(file.getName().getPath());
         tiddler.setContentType(getContentType(file, md));
+        String value = md.get("default");
+        if ("yes".equalsIgnoreCase(value)) {
+            tiddler.defineDefault();
+        }
 
         LOGGER.debug("Done create tiddler for file {}...", file.getName().getPath());
         LOGGER.trace(tiddler.toString());
