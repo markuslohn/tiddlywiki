@@ -54,7 +54,7 @@ public class LocalizerTest extends TestCase {
     // test with "german" language Localizer.
     assertEquals(deLocale, instance.getLocale());
     assertEquals("Wert1", instance.getResourceString("s1"));
-    assertEquals("Wert2", instance.getResourceString("x2"));
+    assertEquals("Wert2", instance.getResourceString("s2"));
     Object[] parameters = new Object[2];
     parameters[0] = "s1";
     parameters[1] = "s2";
@@ -68,7 +68,7 @@ public class LocalizerTest extends TestCase {
     instance.setLocale(enLocale, getClass());
     assertEquals(enLocale, instance.getLocale());
     assertEquals("Value1", instance.getResourceString("s1"));
-    assertEquals("Value2", instance.getResourceString("x2"));
+    assertEquals("Value2", instance.getResourceString("s2"));
     assertEquals("Test with Value1, Value2 values.", instance.getResourceString("s4", parameters));
     bundle1 =
         instance.getResourceBundle("de.bimalo.tiddlywiki.common.resources.LocalizerTestBundle1");

@@ -86,6 +86,8 @@ final class DocumentVisitor implements FileObjectVisitor {
                 ts.setMaxStringLength(DEFAULT_MAXSTRINGLENGTH);
             }
             text = ts.parseToString(is, md);
+        } catch (RuntimeException ex) {
+            throw ex;
         } catch (Exception ex) {
             if (ex instanceof FileSystemException) {
                 throw (FileSystemException) ex;
@@ -146,7 +148,7 @@ final class DocumentVisitor implements FileObjectVisitor {
             FileObject parent = file.getParent();
             if (parent != null) {
                 String absolutePath = parent.getName().getPath();
-                String[] pathNames = absolutePath.split(File.separator);
+                String[] pathNames = absolutePath.split(String.valueOf(File.separator));
                 keywords.addAll(Arrays.asList(pathNames));
             }
         } catch (FileSystemException ex) {
@@ -250,9 +252,7 @@ final class DocumentVisitor implements FileObjectVisitor {
                 if (LOGGER.isTraceEnabled()) {
                     LOGGER.trace(ex.getMessage(), ex);
                 }
-                if (contentType == null) {
-                    contentType = "text/x-markdown";
-                }
+                contentType = "text/x-markdown";
             }
         }
         return contentType;

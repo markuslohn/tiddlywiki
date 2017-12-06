@@ -13,9 +13,9 @@
   <packaging>jar</packaging>
   <name>tiddlywiki-core</name>
   <properties>
-    <apache-tika-version>1.15</apache-tika-version>
-    <apache-freemarker-version>2.3.26-incubating</apache-freemarker-version>
-    <apache-vfs-version>2.1</apache-vfs-version>
+    <apache-tika-version>1.16</apache-tika-version>
+    <apache-freemarker-version>2.3.27-incubating</apache-freemarker-version>
+    <apache-vfs-version>2.2</apache-vfs-version>
   </properties>
   <dependencies>
     <dependency>

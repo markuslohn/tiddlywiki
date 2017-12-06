@@ -1,5 +1,6 @@
 package de.bimalo.tiddlywiki.fs;
 
+import de.bimalo.tiddlywiki.Tiddler;
 import java.io.Serializable;
 import java.util.Comparator;
 import org.apache.commons.vfs2.FileName;
@@ -14,6 +15,11 @@ import org.apache.commons.vfs2.FileObject;
  * @see Tiddler
  */
 final class FilenameComparator implements Comparator<FileObject>, Serializable {
+
+    /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = 2L;
 
     /**
      * Compares two <code>org.apache.commons.vfs2.FileObject</code> by using the

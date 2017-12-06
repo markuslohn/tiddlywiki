@@ -6,13 +6,14 @@ import java.util.List;
 
 /**
  * <p>
- * A TiddlyWiki, a reusable non-linear personal web notebook. It's a unique wiki 
+ * A TiddlyWiki, a reusable non-linear personal web notebook. It's a unique wiki
  * that people love using to keep ideas and information organised.</p>
  * <p>
  * TiddlyWiki is made up of chunks of information called tiddlers. A <code>
  * Tiddler</code> does represent only one tiddler embedded in a TiddlyWiki.</p>
  * <p>
- * See http://tiddlywiki.com for more information about TiddlyWiki and tiddlers.</p>
+ * See http://tiddlywiki.com for more information about TiddlyWiki and
+ * tiddlers.</p>
  *
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
  * @see Tiddler

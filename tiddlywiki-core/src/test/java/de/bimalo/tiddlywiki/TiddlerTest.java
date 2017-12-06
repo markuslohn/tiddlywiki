@@ -174,11 +174,13 @@ public class TiddlerTest {
     public void Tiddler_createDate_ModifyOutside() {
         Tiddler t = new Tiddler();
         Date actualCreateDate = t.getCreateDate();
+        actualCreateDate.hashCode();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
             // can be ignored!
         }
+
         actualCreateDate = new Date();
         assertNotEquals(actualCreateDate, t.getCreateDate());
     }
@@ -187,6 +189,7 @@ public class TiddlerTest {
     public void Tiddler_uid_ModifyOutside() {
         Tiddler t = new Tiddler();
         UID actualUID = t.getId();
+        actualUID.hashCode();
         actualUID = new UID();
         assertNotEquals(actualUID, t.getId());
     }

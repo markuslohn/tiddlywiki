@@ -2,7 +2,6 @@ package de.bimalo.tiddlywiki.fs;
 
 import de.bimalo.tiddlywiki.Tiddler;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +27,7 @@ import static org.mockito.Mockito.when;
  * @author <a href="mailto:markus.lohn@bimalo.de">Markus Lohn</a>
  * @see DocumentVisitor
  */
-public class DocumentVisitorTest {
+public final class DocumentVisitorTest {
 
     public DocumentVisitorTest() {
     }
@@ -100,7 +99,7 @@ public class DocumentVisitorTest {
     public void DocumentVisitor_visit_MarkdownDocument2() {
         FileObject document;
         try {
-            URL testFileUrl = this.getClass().getResource("/test2.md");
+            URL testFileUrl = getClass().getResource("/test2.md");
             FileSystemManager fsManager = VFS.getManager();
             document = fsManager.resolveFile(testFileUrl);
 

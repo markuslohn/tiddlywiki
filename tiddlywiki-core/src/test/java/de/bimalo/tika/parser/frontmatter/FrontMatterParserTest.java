@@ -18,7 +18,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
-import org.apache.tika.metadata.TikaCoreProperties;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
@@ -31,104 +33,87 @@ import static org.mockito.Mockito.mock;
  */
 public class FrontMatterParserTest {
 
-  public FrontMatterParserTest() {
-  }
-
-  @BeforeClass
-  public static void setUpClass() {
-  }
-
-  @AfterClass
-  public static void tearDownClass() {
-  }
-
-  @Before
-  public void setUp() {
-  }
-
-  @After
-  public void tearDown() {
-  }
-
-  @Test
-  public void testParseWithFrontMatter() {
-    try {
-      StringBuilder sb = new StringBuilder();
-      sb.append("---\n");
-      sb.append("title: testtitle\n");
-      sb.append("keywords: [a,b,c,noch ein tag]\n");
-      sb.append("subtitle: untertitel\n");
-      sb.append("sonstiges: xxx\n");
-      sb.append("---\n");
-      sb.append("First Line Description\n");
-      sb.append("Second Line Description\n");
-      String text = sb.toString();
-      FileObject file = getTextDocumentFileObject("Testdokument", "/Referenz/T", text);
-
-      Metadata metadata = new Metadata();
-      ByteArrayInputStream is = new ByteArrayInputStream(sb.toString().getBytes());
-      FrontMatterParser fmp = new FrontMatterParser();
-
-      Tika tikaService = new Tika(TikaConfig.getDefaultConfig().getDetector(), fmp);
-      String content = tikaService.parseToString(is, metadata);
-      assertNotNull(content);
-      assertNotNull(metadata);
-     
-      assertEquals("testtitle", metadata.get("title"));
-      assertTrue(metadata.isMultiValued("keywords"));
-      String[] tagValues = metadata.getValues("keywords");
-      assertEquals(4, tagValues.length);
-
-      System.out.println(metadata);
-      System.out.println(content);
-
-    } catch (FileNotFolderException ex) {
-      assertTrue(true);
-    } catch (Exception ex) {
-      ex.printStackTrace();
+    public FrontMatterParserTest() {
     }
-  }
 
-  @Test
-  public void testParseWithoutFrontMatter() {
-    try {
-      StringBuilder sb = new StringBuilder();
-      sb.append("First Line Description\n");
-      sb.append("Second Line Description\n");
-      String text = sb.toString();
-      FileObject file = getTextDocumentFileObject("Testdokument", "/Referenz/T", text);
-
-      Metadata metadata = new Metadata();
-      ByteArrayInputStream is = new ByteArrayInputStream(sb.toString().getBytes());
-      FrontMatterParser fmp = new FrontMatterParser();
-
-      Tika tikaService = new Tika(TikaConfig.getDefaultConfig().getDetector(), fmp);
-      String content = tikaService.parseToString(is, metadata);
-      assertNotNull(content);
-      assertNotNull(metadata);
-      assertNull(metadata.get("title"));
-
-      System.out.println(metadata);
-      System.out.println(content);
-
-    } catch (FileNotFolderException ex) {
-      assertTrue(true);
-    } catch (Exception ex) {
-      ex.printStackTrace();
+    @BeforeClass
+    public static void setUpClass() {
     }
-  }
 
-  private FileObject getTextDocumentFileObject(String name, String path, String text) throws FileSystemException {
-    FileContent documentContent = mock(FileContent.class);
-    when(documentContent.getInputStream()).thenReturn(new ByteArrayInputStream(text.getBytes()));
-    FileName documentName = mock(FileName.class);
-    when(documentName.getPath()).thenReturn(path + "/" + name + ".txt");
-    FileObject document = mock(FileObject.class);
-    when(document.getName()).thenReturn(documentName);
-    when(document.getContent()).thenReturn(documentContent);
-    when(document.getType()).thenReturn(FileType.FILE);
-    when(document.exists()).thenReturn(Boolean.TRUE);
+    @AfterClass
+    public static void tearDownClass() {
+    }
 
-    return document;
-  }
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    @Test
+    public void testParseWithFrontMatter() {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("---\n");
+            sb.append("title: testtitle\n");
+            sb.append("keywords: [a,b,c,noch ein tag]\n");
+            sb.append("subtitle: untertitel\n");
+            sb.append("sonstiges: xxx\n");
+            sb.append("---\n");
+            sb.append("First Line Description\n");
+            sb.append("Second Line Description\n");
+            String text = sb.toString();
+
+            Metadata metadata = new Metadata();
+            ByteArrayInputStream is = new ByteArrayInputStream(text.getBytes("UTF-8"));
+            FrontMatterParser fmp = new FrontMatterParser();
+
+            Tika tikaService = new Tika(TikaConfig.getDefaultConfig().getDetector(), fmp);
+            String content = tikaService.parseToString(is, metadata);
+            assertNotNull(content);
+            assertNotNull(metadata);
+
+            assertEquals("testtitle", metadata.get("title"));
+            assertTrue(metadata.isMultiValued("keywords"));
+            String[] tagValues = metadata.getValues("keywords");
+            assertEquals(4, tagValues.length);
+
+            System.out.println(metadata);
+            System.out.println(content);
+
+        } catch (FileNotFolderException ex) {
+            assertTrue(true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testParseWithoutFrontMatter() {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("First Line Description\n");
+            sb.append("Second Line Description\n");
+
+            Metadata metadata = new Metadata();
+            ByteArrayInputStream is = new ByteArrayInputStream(sb.toString().getBytes("UTF-8"));
+            FrontMatterParser fmp = new FrontMatterParser();
+
+            Tika tikaService = new Tika(TikaConfig.getDefaultConfig().getDetector(), fmp);
+            String content = tikaService.parseToString(is, metadata);
+            assertNotNull(content);
+            assertNotNull(metadata);
+            assertNull(metadata.get("title"));
+
+            System.out.println(metadata);
+            System.out.println(content);
+
+        } catch (FileNotFolderException ex) {
+            assertTrue(true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 }

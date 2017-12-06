@@ -43,7 +43,6 @@ public class TiddlyWikiGeneratorTest {
         cmdParser.parseArguments(args);
 
         //TiddlyWikiGenerator twgen = new TiddlyWikiGenerator(cmdParser.getArgumentValues());
-
     }
-    
+
 }

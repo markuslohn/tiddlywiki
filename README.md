@@ -46,6 +46,7 @@ title
 description
 creator
 keywords
+default
 
 ## Build
 
