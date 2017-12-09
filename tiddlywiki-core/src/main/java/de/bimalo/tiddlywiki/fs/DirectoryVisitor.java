@@ -31,7 +31,31 @@ final class DirectoryVisitor implements FileObjectVisitor {
      * Logger instance.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryVisitor.class);
-    
+
+    /**
+     * A reference to an existing folder in the file system used as starting
+     * point to search for content, like "/Documents/Reference".
+     */
+    private FileObject rootFolder = null;
+
+    /**
+     * Creates a new DirectoryVisitor with default values.
+     */
+    public DirectoryVisitor() {
+        this.rootFolder = null;
+    }
+
+    /**
+     * Creates a new DirectoryVisitor with a rootFolder.
+     *
+     * @param rootFolder the reference to an existing folder in the file system
+     * used as starting point to search for content, like
+     * "/Documents/Reference".
+     */
+    public DirectoryVisitor(final FileObject rootFolder) {
+        this.rootFolder = rootFolder;
+    }
+
     @Override
     public Object visit(FileObject file) throws IOException {
         if (file == null) {
@@ -40,10 +64,10 @@ final class DirectoryVisitor implements FileObjectVisitor {
         if (!(file.getType().equals(FileType.FOLDER))) {
             throw new FileNotFolderException(file);
         }
-        
+
         LOGGER.debug("Visit file {}.", file.getName().getPath());
         Tiddler tiddler = createTiddler(file);
-        
+
         return tiddler;
     }
 
@@ -63,10 +87,10 @@ final class DirectoryVisitor implements FileObjectVisitor {
         tiddler.setTitle(file.getName().getBaseName());
         tiddler.addTags(filterKeywords(file));
         tiddler.setPath(file.getName().getPath());
-        
+
         LOGGER.debug("Done create tiddler for directory {}...", file.getName().getPath());
         LOGGER.trace(tiddler.toString());
-        
+
         return tiddler;
     }
 
@@ -80,7 +104,7 @@ final class DirectoryVisitor implements FileObjectVisitor {
     private List<String> filterKeywords(final FileObject file)
             throws FileSystemException {
         List<String> keywords = new ArrayList();
-        
+
         FileObject parent = file.getParent();
         if (parent != null) {
             String absolutePath = parent.getName().getPath();
@@ -89,5 +113,5 @@ final class DirectoryVisitor implements FileObjectVisitor {
         }
         return keywords;
     }
-    
+
 }

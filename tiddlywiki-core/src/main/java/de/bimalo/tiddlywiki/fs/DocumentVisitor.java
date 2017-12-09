@@ -42,9 +42,33 @@ final class DocumentVisitor implements FileObjectVisitor {
     private static final Logger LOGGER = LoggerFactory.getLogger(DocumentVisitor.class);
 
     /**
+     * A reference to an existing folder in the file system used as starting
+     * point to search for content, like "/Documents/Reference".
+     */
+    private FileObject rootFolder = null;
+
+    /**
      * The maximum number of characters for extracted text.
      */
     private static final int DEFAULT_MAXSTRINGLENGTH = 2048;
+
+    /**
+     * Creates a new DocumentVisitor with default values.
+     */
+    public DocumentVisitor() {
+        this.rootFolder = null;
+    }
+
+    /**
+     * Creates a new DocumentVisitor with a rootFolder.
+     *
+     * @param rootFolder the reference to an existing folder in the file system
+     * used as starting point to search for content, like
+     * "/Documents/Reference".
+     */
+    public DocumentVisitor(final FileObject rootFolder) {
+        this.rootFolder = rootFolder;
+    }
 
     @Override
     public Object visit(final FileObject file) throws IOException {
@@ -148,6 +172,10 @@ final class DocumentVisitor implements FileObjectVisitor {
             FileObject parent = file.getParent();
             if (parent != null) {
                 String absolutePath = parent.getName().getPath();
+                if (rootFolder != null) {
+                    String rootFolderPath = rootFolder.getName().getPath();
+                    absolutePath = absolutePath.replaceAll(rootFolderPath, "");
+                }
                 String[] pathNames = absolutePath.split(String.valueOf(File.separator));
                 keywords.addAll(Arrays.asList(pathNames));
             }

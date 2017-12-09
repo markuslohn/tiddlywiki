@@ -11,8 +11,10 @@ import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +43,7 @@ public final class TiddlyWikiGenerator {
     /**
      * Logger instance.
      */
-    private static Logger LOGGER = LoggerFactory.getLogger(TiddlyWikiGenerator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TiddlyWikiGenerator.class);
 
     /**
      * Name of the argument for the root folder.
@@ -174,7 +176,10 @@ public final class TiddlyWikiGenerator {
         sb.append("./tw -rootFolder=<value> -templateFile=<value> -resultFile=<value> \n");
         try {
             out.write(sb.toString().getBytes("UTF8"));
-        } catch (Exception ex) {
+        } catch (UnsupportedEncodingException ex) {
+            System.out.println(ex.getMessage());
+            System.out.println(sb.toString());
+        } catch (IOException ex) {
             System.out.println(ex.getMessage());
             System.out.println(sb.toString());
         }
@@ -238,11 +243,7 @@ public final class TiddlyWikiGenerator {
         String maxLevelParamValue = arguments.get(MAXLEVEL_ARGUMENT);
         LOGGER.trace("maxLevel= {}.", maxLevelParamValue);
         if (maxLevelParamValue != null && !maxLevelParamValue.isEmpty()) {
-            try {
-                maxLevel = Integer.parseInt(maxLevelParamValue);
-            } catch (Exception ex) {
-                LOGGER.warn("Parameter maxLevel not set because of ", ex);
-            }
+            maxLevel = Integer.parseInt(maxLevelParamValue);
         }
     }
 
@@ -254,14 +255,14 @@ public final class TiddlyWikiGenerator {
     public static void main(String[] args) {
         VersionInfo vInfo = new VersionInfo();
         System.out.println("TiddlyWiki Generator " + vInfo.getVersionNumberString());
-        LOGGER.info("TiddlyWiki Generator " + vInfo.getVersionNumberString());
+        LOGGER.info("TiddlyWiki Generator {}", vInfo.getVersionNumberString());
 
         if (args != null) {
             System.out.println("Arguments:");
             LOGGER.info("Arguments: ");
-            for (int i = 0; i < args.length; i++) {
-                System.out.println(args[i]);
-                LOGGER.info(args[i]);
+            for (String arg : args) {
+                System.out.println(arg);
+                LOGGER.info(arg);
             }
         }
 
@@ -280,7 +281,7 @@ public final class TiddlyWikiGenerator {
             TiddlyWikiGenerator.printUsage(System.err);
         } finally {
             timerec.stop();
-            LOGGER.info(timerec.toString());
+            LOGGER.info("{}", timerec);
             System.out.println(timerec);
         }
     }

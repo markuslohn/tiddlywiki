@@ -55,13 +55,6 @@ final class FilesystemTreeWalker {
     private Tiddler rootTiddler = null;
 
     /**
-     * A special Tiddler providing a tag cloud based on the content of the
-     * TiddlyWiki. The TagCloud plug is required so that this Tiddler works
-     * correctly.
-     */
-    private Tiddler tagCloudTiddler = null;
-
-    /**
      * A reference to an existing folder in the file system used as starting
      * point to search for content, like "/Documents/Reference".
      */
@@ -82,13 +75,13 @@ final class FilesystemTreeWalker {
      * Visitor implementation for documents. This variable is used as cache. Can
      * be moved into a factory in a future release.
      */
-    private final FileObjectVisitor documentVisitor = new DocumentVisitor();
+    private FileObjectVisitor documentVisitor = null;
 
     /**
      * Visitor implementation for directories. Can be moved into a factory in a
      * future release.
      */
-    private final FileObjectVisitor directoryVisitor = new DirectoryVisitor();
+    private FileObjectVisitor directoryVisitor = null;
 
     /**
      * Creates a new <code>FilesystemTreeWalker</code>.
@@ -111,6 +104,8 @@ final class FilesystemTreeWalker {
 
         this.rootFolder = rootFolder;
         this.localizer = new Localizer(Locale.getDefault());
+        documentVisitor = new DocumentVisitor(this.rootFolder);
+        directoryVisitor = new DirectoryVisitor(this.rootFolder);
     }
 
     /**
@@ -258,11 +253,11 @@ final class FilesystemTreeWalker {
      * @return a new TiddlyWiki, it always creates a new one
      */
     private TiddlyWiki createTiddlyWiki(Tiddler rootTiddler) {
-        TiddlyWiki wiki = createTiddlyWiki(rootTiddler.getTitle(),
+        TiddlyWiki tmpwiki = createTiddlyWiki(rootTiddler.getTitle(),
                 localizer.formatDateObject(new Date(), "dd.MM.yyyy hh:mm:ss"));
-        wiki.addTiddler(rootTiddler);
-        wiki.addDefaultTiddler(rootTiddler);
-        return wiki;
+        tmpwiki.addTiddler(rootTiddler);
+        tmpwiki.addDefaultTiddler(rootTiddler);
+        return tmpwiki;
     }
 
     /**
@@ -273,10 +268,11 @@ final class FilesystemTreeWalker {
      * @return a new TiddlyWiki, it always creates a new one
      */
     private TiddlyWiki createTiddlyWiki(String title, String subtitle) {
-        TiddlyWiki wiki = new TiddlyWiki();
-        wiki.setTitle(title);
-        wiki.setSubtitle(subtitle);
-        return wiki;
+        TiddlyWiki tmpwiki;
+        tmpwiki = new TiddlyWiki();
+        tmpwiki.setTitle(title);
+        tmpwiki.setSubtitle(subtitle);
+        return tmpwiki;
     }
 
 }
