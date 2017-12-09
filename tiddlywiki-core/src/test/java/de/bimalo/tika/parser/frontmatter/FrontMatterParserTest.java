@@ -1,11 +1,6 @@
 package de.bimalo.tika.parser.frontmatter;
 
-import org.apache.commons.vfs2.FileContent;
-import org.apache.commons.vfs2.FileName;
 import org.apache.commons.vfs2.FileNotFolderException;
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemException;
-import org.apache.commons.vfs2.FileType;
 import org.apache.tika.Tika;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.metadata.Metadata;
@@ -18,12 +13,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
 
 /**
  * <p>

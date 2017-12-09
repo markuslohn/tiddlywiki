@@ -1,8 +1,16 @@
 package de.bimalo.tiddlywiki.common;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,23 +25,20 @@ import java.util.regex.Pattern;
 public final class CommandLineParser {
 
     /**
-     * The regular pattern describing the syntax of a command line argument:
-     * -parametername=value.
+     * The regular pattern describing the syntax of a command line argument: -parametername=value.
      */
     private static final String ARGUMENT_PATTERN = "-[\\w]+=[\\w\\W]+";
 
     /**
-     * Represents java object representing the regular expression describing the
-     * argument syntax.
+     * Represents java object representing the regular expression describing the argument syntax.
      */
     private Pattern argumentPattern = null;
 
     /**
-     * A <code>java.util.Map</code> containing all correct parsed arguments from
-     * the command line. The name of the argument is the key and value is the
-     * value provided by the command line.
+     * A <code>java.util.Map</code> containing all correct parsed arguments from the command line.
+     * The name of the argument is the key and value is the value provided by the command line.
      */
-    private Map<String, String> argumentValues = new HashMap<String, String>();
+    private final Map<String, String> argumentValues = new HashMap<>();
 
     /**
      * Creates a new <code>CommandLineParser</code> with default values.
@@ -44,16 +49,15 @@ public final class CommandLineParser {
     }
 
     /**
-     * Parses a given array with arguments provided by the command line
-     * interface.
+     * Parses a given array with arguments provided by the command line interface.
      *
      * @param args array of arguments
      * @exception IllegalArgumentException if arguments are invalid
      */
     public void parseArguments(String[] args) {
         argumentValues.clear();
-        for (int i = 0; i < args.length; i++) {
-            parseArgument(args[i]);
+        for (String arg : args) {
+            parseArgument(arg);
         }
     }
 
@@ -70,8 +74,7 @@ public final class CommandLineParser {
     }
 
     /**
-     * Gets all values retrieved from the command line as unmodifiable
-     * <code>java.util.Map</code>.
+     * Gets all values retrieved from the command line as unmodifiable <code>java.util.Map</code>.
      *
      * @return argument values as Map.
      */
@@ -90,10 +93,32 @@ public final class CommandLineParser {
         if (!argumentMatcher.matches()) {
             throw new IllegalArgumentException(constructInvalidSyntaxErrorMessage(argument));
         }
-        int equalsSignIndex = argument.indexOf('=');
-        String argumentName = argument.substring(1, equalsSignIndex);
-        String argumentValue = argument.substring(equalsSignIndex + 1);
-        argumentValues.put(argumentName, argumentValue);
+        String[] values = argument.split("=");
+        String argumentName = values[0].substring(1);
+        String argumentValue = values[1];
+        if (argumentValue.endsWith(".properties")) {
+            File propertiesFile = new File(argumentValue);
+            if (propertiesFile.exists()) {
+                Properties props = new Properties();
+                try {
+                    props.load(new FileInputStream(propertiesFile));
+                    for (Map.Entry entry : props.entrySet()) {
+                        argumentValues.put(String.valueOf(entry.getKey()), String.valueOf(entry.getValue()));
+                    }
+                }
+                catch (FileNotFoundException ex) {
+                    // Can be ignored because verified before calling this function!
+                }
+                catch (IOException ex) {
+                    argumentValues.put(argumentName, argumentValue);
+                }                
+                
+            } else {
+                argumentValues.put(argumentName, argumentValue);
+            }
+        } else {
+            argumentValues.put(argumentName, argumentValue);
+        }
     }
 
     private String constructInvalidSyntaxErrorMessage(String argument) {
