@@ -3,6 +3,7 @@ package de.bimalo.tiddlywiki.common;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -105,6 +106,27 @@ public class CommandLineParserTest {
             assertEquals("value 2", parser.getArgumentValue("argument2"));
             assertEquals("/test/test11 muster/xxx", parser.getArgumentValue("rootFolder"));
 
+        }
+        catch (URISyntaxException ex) {
+            assertTrue(ex.getMessage(), false);
+        }
+
+    }
+
+      @Test
+    public void CommandLineParser_parse_PropertiesFileArgument2() {
+        URL fileURL = this.getClass().getResource("/blog.properties");
+
+        try {
+            File propertiesFile = new File(fileURL.toURI());
+            String[] args = new String[]{"-configFile=" + propertiesFile.getAbsolutePath()};
+            CommandLineParser parser = new CommandLineParser();
+            parser.parseArguments(args);
+            assertNotNull(parser.getArgumentValue("rootFolder"));
+            assertNotNull(parser.getArgumentValue("templateFile"));
+            assertNotNull(parser.getArgumentValue("resultFile"));
+            Map test = parser.getArgumentValues();
+            assertEquals(3, test.entrySet().size());
         }
         catch (URISyntaxException ex) {
             assertTrue(ex.getMessage(), false);
