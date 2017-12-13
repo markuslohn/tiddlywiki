@@ -143,7 +143,6 @@ public final class TiddlyWikiGenerator {
                 root.put("subTitle", tw.getSubTitle());
                 root.put("defaultTiddlers", tw.getDefaultTiddler().getTiddlers());
                 root.put("rootTiddlers", tw.listTiddlers());
-                root.put("staticFilesFolder", "/Users/mlohn/Google Drive/Referenz/_static");
                 temp.process(root, out);
             } finally {
                 StreamUtilities.closeWriter(out);
