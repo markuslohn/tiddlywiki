@@ -8,6 +8,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -20,6 +27,7 @@ import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
 import org.apache.tika.Tika;
 import org.apache.tika.config.TikaConfig;
+import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.Property;
 import org.apache.tika.metadata.TikaCoreProperties;
@@ -101,8 +109,8 @@ final class DocumentVisitor implements FileObjectVisitor {
         String text = null;
         InputStream is = new BufferedInputStream(file.getContent().getInputStream());
         try {
-            Tika ts = null;
-            if (file.getName().getExtension().matches(FilesystemTreeWalker.TEXT_FILE_TYPES)) {
+            Tika ts;
+            if (file.getName().getExtension().matches("md|rst|MD|RST|txt|TXT")) {
                 Parser parser = new FrontMatterParser();
                 ts = new Tika(TikaConfig.getDefaultConfig().getDetector(), parser);
             } else {
@@ -112,7 +120,7 @@ final class DocumentVisitor implements FileObjectVisitor {
             text = ts.parseToString(is, md);
         } catch (RuntimeException ex) {
             throw ex;
-        } catch (Exception ex) {
+        } catch (IOException | TikaException ex) {
             if (ex instanceof FileSystemException) {
                 throw (FileSystemException) ex;
             } else {
@@ -141,7 +149,8 @@ final class DocumentVisitor implements FileObjectVisitor {
         tiddler.setTitle(getTitle(file, md));
         tiddler.setCreator(getAuthor(file, md));
         tiddler.setModifier(getAuthor(file, md));
-        tiddler.setCreateDate(getLastModifyDate(file, md));
+        tiddler.setCreateDate(getCreateDate(file, md));
+        tiddler.setLastModifyDate(getLastModifyDate(file, md));
         tiddler.addTags(filterKeywords(file, md));
         tiddler.setText(text);
         tiddler.setPath(file.getName().getPath());
@@ -246,27 +255,36 @@ final class DocumentVisitor implements FileObjectVisitor {
     }
 
     private Date getLastModifyDate(final FileObject file, final Metadata md) {
-        Date lastModifyDate = null;
+        Date lastModifyDate = new Date();
         try {
             lastModifyDate = new Date(file.getContent().getLastModifiedTime());
         } catch (FileSystemException ex) {
             LOGGER.warn(ex.getMessage());
-            lastModifyDate = new Date();
         }
         return lastModifyDate;
     }
 
-    private String getContentType(final FileObject file, final Metadata md) {
-        String contentType = md.get(Metadata.CONTENT_TYPE);
-        if (contentType == null) {
-            String ext = file.getName().getExtension();
-            if (ext != null && ext.matches(FilesystemTreeWalker.TEXT_FILE_TYPES)) {
-                contentType = "text/x-markdown";
-            }
-        } else if (contentType.contains("markdown")) {
-            contentType = "text/x-markdown";
+    private Date getCreateDate(final FileObject file, final Metadata md) throws IOException {
+        Date createDate = new Date();
+        try {
+            Path p = Paths.get(file.getName().getPath());
+            BasicFileAttributes view = Files.getFileAttributeView(p, BasicFileAttributeView.class).readAttributes();
+            FileTime creationTime = view.creationTime();
+            createDate = new Date(creationTime.toMillis());
+        } catch (NoSuchFileException ex) {
+            LOGGER.warn(ex.getMessage());
         }
-        if (contentType == null) {
+        return createDate;
+    }
+
+    private String getContentType(final FileObject file, final Metadata md) {
+        String contentType = "text/vnd.tiddlywiki";
+        String ext = file.getName().getExtension();
+        if (ext.matches("md|MD|rst|RST")) {
+            contentType = "text/x-markdown";
+        } else if (ext.matches("txt|TXT")) {
+            contentType = "text/vnd.tiddlywiki";
+        } else {
             try {
                 FileContent content = file.getContent();
                 if (content != null) {
@@ -280,7 +298,6 @@ final class DocumentVisitor implements FileObjectVisitor {
                 if (LOGGER.isTraceEnabled()) {
                     LOGGER.trace(ex.getMessage(), ex);
                 }
-                contentType = "text/x-markdown";
             }
         }
         return contentType;

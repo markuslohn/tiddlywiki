@@ -33,12 +33,6 @@ final class FilesystemTreeWalker {
      */
     public static final String SUPPORTED_FILE_TYPES = "md|rst|MD|RST|txt|TXT|pdf|"
             + "PDF|doc|DOC|docx|ppt|PPT|pptx|xls|XLS|xlsx|itmz|xmind|jpg|png|PNG|JPG";
-
-    /**
-     * A list of extensions of text file types supported by this generator.
-     */
-    public static final String TEXT_FILE_TYPES = "md|rst|MD|RST|txt|TXT";
-
     /**
      * Logger instance.
      */

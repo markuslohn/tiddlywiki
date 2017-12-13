@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.vfs2.FileContent;
 import org.apache.commons.vfs2.FileNotFolderException;
 import org.apache.commons.vfs2.FileObject;
@@ -80,7 +81,7 @@ public final class DocumentVisitorTest {
             URL testPdfUrl = this.getClass().getResource("/test1.pdf");
             FileSystemManager fsManager = VFS.getManager();
             document = fsManager.resolveFile(testPdfUrl);
-
+  
             FileObjectVisitor visitor = new DocumentVisitor();
             Object result = visitor.visit(document);
             assertNotNull(result);
@@ -142,6 +143,28 @@ public final class DocumentVisitorTest {
         }
     }
 
+    @Test
+    public void DocumentVisitor_visit_ReplaceVariableValuesInContent() {
+        FileObject document;
+        try {
+            document = FileObjectFixture.getDocumentFileObject("test.txt", "test.txt\n\nstaticFileFolder/Testcontent", true);
+
+            FileObjectVisitor visitor = new DocumentVisitor();
+            Object result = visitor.visit(document);
+            assertNotNull(result);
+            assertEquals(Tiddler.class.getName(), result.getClass().getName());
+
+            Tiddler tiddler = (Tiddler) result;
+            assertEquals("test.txt", tiddler.getTitle());
+            assertNotNull(tiddler.getModifier());
+            assertNotNull(tiddler.getCreateDate());
+            assertNotNull(tiddler.getModifier());
+            assertNotNull(tiddler.getId());
+            assertNull(tiddler.getParent());
+        } catch (Exception ex) {
+            assertTrue(ex.getMessage(), false);
+        }
+    }
     @Test
     public void DocumentVisitor_Construct_InvalidFileObjectType() {
         try {

@@ -64,6 +64,12 @@ public class Tiddler implements Comparable<Tiddler> {
      * Date when this Tiddler was created.
      */
     private Date createDate = null;
+
+    /**
+     * Date when this Tiddler was modified.
+     */
+    private Date lastModifyDate = null;
+
     /**
      * The content of this Tiddler. It can contain simple text or text following
      * wiki syntax or markup language.
@@ -182,6 +188,15 @@ public class Tiddler implements Comparable<Tiddler> {
      */
     public Date getCreateDate() {
         return new Date(createDate.getTime());
+    }
+
+    /**
+     * Gets the <code>java.util.Date</code> when this Tiddler was modified.
+     *
+     * @return the date of last modification
+     */
+    public Date getLastModifyDate() {
+        return new Date(lastModifyDate.getTime());
     }
 
     /**
@@ -321,6 +336,18 @@ public class Tiddler implements Comparable<Tiddler> {
     public void setCreateDate(Date createDate) {
         if (createDate != null) {
             this.createDate = new Date(createDate.getTime());
+            this.hashCode = 0;
+        }
+    }
+
+    /**
+     * Sets the date when this Tiddler was modified.
+     *
+     * @param lastModifyDate the modification date
+     */
+    public void setLastModifyDate(Date lastModifyDate) {
+        if (lastModifyDate != null) {
+            this.lastModifyDate = new Date(lastModifyDate.getTime());
             this.hashCode = 0;
         }
     }
@@ -538,6 +565,7 @@ public class Tiddler implements Comparable<Tiddler> {
         modifier = System.getProperty("user.name");
         text = "Type the text for 'New Tiddler'";
         createDate = new Date();
+        lastModifyDate = new Date();
     }
 
     /**
