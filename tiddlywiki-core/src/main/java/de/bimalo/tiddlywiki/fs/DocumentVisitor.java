@@ -115,12 +115,12 @@ final class DocumentVisitor implements FileObjectVisitor {
                 ts = new Tika(TikaConfig.getDefaultConfig().getDetector(), parser);
             } else {
                 ts = new Tika();
-                ts.setMaxStringLength(DEFAULT_MAXSTRINGLENGTH);
             }
             text = ts.parseToString(is, md);
         } catch (RuntimeException ex) {
             throw ex;
         } catch (IOException | TikaException ex) {
+             LOGGER.error("Could not parse file {}, because of {}.", file.getName().getPath(), ex.getMessage());
             if (ex instanceof FileSystemException) {
                 throw (FileSystemException) ex;
             } else {
