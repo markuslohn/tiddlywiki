@@ -15,13 +15,23 @@ Module  |  Description |
 tiddlywiki-common  | cross-cutting functionality
 tiddlywiki-core | TiddlyWiki business objects, file system analysis and wiki generation process.
 
+## Installation
+
+1. Download and extract the distribution to a folder on your target system.
+2. Option: Create a symbolic link
+
+   ```bash
+   $ cd INSTALL_DIR/bin
+   $ sudo ln -s INSTALL_DIR/bin/tw /usr/local/bin/tw
+   ```
+
 ## Usage
 
 The final distribution contains the following structure and files:
 
 bimalo-tiddlywiki  
 |--bin    
-|---- tw.sh  
+|---- tw  
 |---- default-template.html  
 |--config  
 |---- log4j.properties  
@@ -34,9 +44,9 @@ bimalo-tiddlywiki
 
 |Parameter  |  Description
 |-----------|-------------
-|rootFolder |  The absolute path to the folder containing the content for the TiddlyWiki.
-|templateFile| The absolute path to an empty TiddlyWiki file.
-|resultFile| The absolute path to the result TiddlyWiki file.
+|rootFolder |  The absolute or relative path to the folder containing the content.
+|templateFile| The absolute or relative path to a template file.
+|resultFile| The absolute or relative path to the result file.
 
 **Note:**
 As alternative you can put all parameters in a config file and provide the path to the config file when invoking the generator. The config file needs `.properties` as extension. See the following example:
