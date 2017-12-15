@@ -63,15 +63,19 @@ public final class TiddlyWikiGenerator {
     private static final String MAXLEVEL_ARGUMENT = "maxLevel";
 
     /**
-     * The absolute path to the folder used for the TiddlyWiki content.
+     * The folder from which this program was called.
+     */
+    private FileObject workingFolder = null;
+    /**
+     * The folder used to start analyzing files for the wiki content.
      */
     private FileObject rootFolder = null;
     /**
-     * The absolute path to the TiddlyWiki template file.
+     * The template file used to build the TiddlyWiki.
      */
     private FileObject templateFile = null;
     /**
-     * The absolute path to the TiddlyWiki result file.
+     * The final result file of the generation process.
      */
     private FileObject resultFile = null;
     /**
@@ -96,6 +100,8 @@ public final class TiddlyWikiGenerator {
         Assert.isTrue(arguments.containsKey(RESULTFILE_ARGUMENT), "Argument resultFile is missing.");
 
         try {
+
+            initWorkingFolder();
 
             initRootFolderArgument(arguments);
 
@@ -164,18 +170,24 @@ public final class TiddlyWikiGenerator {
     public static void printUsage(OutputStream out) {
         Assert.notNull(out);
 
+        String newline = System.lineSeparator();
+
         StringBuilder sb = new StringBuilder();
-        sb.append(TiddlyWikiGenerator.class).append(" Usage: \n");
-        sb.append("./tw -rootFolder=<value> -templateFile=<value> -resultFile=<value> \n");
-        sb.append("\n");
-        sb.append("rootFolder = The absolute path to the folder containing the content for the TiddlyWiki. \n");
-        sb.append("templateFile = The absolute path to an empty TiddlyWiki file. \n");
-        sb.append("resultFile = The absolute path to the result TiddlyWiki file. \n");
-        sb.append("\n");
-        sb.append("Example: \n");
-        sb.append("./tw -rootFolder=<value> -templateFile=<value> -resultFile=<value> \n");
+        sb.append(TiddlyWikiGenerator.class).append(" Usage: ").append(newline);
+        sb.append("./tw -rootFolder=<value> -templateFile=<value> -resultFile=<value> ").append(newline);
+        sb.append(newline);
+        sb.append("rootFolder = The absolute or relative path to the folder containing the content. ").append(newline);
+        sb.append("templateFile = The absolute or relative path to a template file. ").append(newline);
+        sb.append("resultFile = The absolute or relative path to the result file. ").append(newline);
+        sb.append(newline);
+        sb.append("Example: ").append(newline);
+        sb.append("./tw -rootFolder=<value> -templateFile=<value> -resultFile=<value> ").append(newline);
+        sb.append(newline);
+        sb.append("Alternative: Provide all arguments within a config file and use the following syntax: ").append(newline);
+        sb.append("./tw -configFile=config.proprties ").append(newline);
+
         try {
-            out.write(sb.toString().getBytes("UTF8"));
+            out.write(sb.toString().getBytes("UTF-8"));
         } catch (UnsupportedEncodingException ex) {
             System.out.println(ex.getMessage());
             System.out.println(sb.toString());
@@ -186,48 +198,60 @@ public final class TiddlyWikiGenerator {
     }
 
     /**
-     * Retrieves the argument describing the result file.
+     * Lookup "working.dir" System property. This property can be provided when
+     * running this program with -Dworking.dir=. It contains the absolute path
+     * to the folder from which this program was called.
+     *
+     * @throws FileSystemException if operation failed
+     */
+    private void initWorkingFolder() throws FileSystemException {
+        String workingFolderName = System.getProperty("working.dir");
+        LOGGER.trace("workingFolderName= {}.", workingFolderName);
+        workingFolder = resolveFile(workingFolderName);
+        if (!workingFolder.exists()) {
+            workingFolder = null;
+        }
+    }
+
+    /**
+     * Lookup and prepare argument "resultFile".
      *
      * @param arguments a Map containing all arguments
      * @throws FileSystemException if operation failed
      */
     private void initResultFileArgument(Map<String, String> arguments) throws FileSystemException {
-        FileSystemManager fsManager = VFS.getManager();
-
         String resultFileName = arguments.get(RESULTFILE_ARGUMENT);
         LOGGER.trace("resultFile= {}.", resultFileName);
-        resultFile = fsManager.resolveFile(resultFileName);
+        resultFile = resolveFile(resultFileName);
     }
 
     /**
-     * Retrieves the argument describing the template file.
+     * Lookup and prepare argument "templateFile".
      *
      * @param arguments a Map containing all arguments
      * @throws FileSystemException if operation failed
+     * @throws IllegalArgumentException if templateFile does not exist
      */
     private void initTemplateFileArgument(Map<String, String> arguments) throws FileSystemException {
-        FileSystemManager fsManager = VFS.getManager();
-
         String templateFileName = arguments.get(TEMPLATEFILE_ARGUMENT);
         LOGGER.trace("tempalteFileName= {}.", templateFileName);
-        templateFile = fsManager.resolveFile(templateFileName);
+        templateFile = resolveFile(templateFileName);
         if (!templateFile.exists()) {
             throw new IllegalArgumentException(templateFile + " doesn't exist.");
         }
     }
 
     /**
-     * Retrieves the argument describing the root folder.
+     * Lookup and prepare argument "rootFolder".
      *
      * @param arguments a Map containing all arguments
      * @throws FileSystemException if operation failed
+     * @throws IllegalArgumentException if rootFolder does not exist
      */
     private void initRootFolderArgument(Map<String, String> arguments) throws FileSystemException {
-        FileSystemManager fsManager = VFS.getManager();
-
         String rootFolderName = arguments.get(ROOTFOLDER_ARGUMENT);
         LOGGER.trace("rootFolderName= {}.", rootFolderName);
-        rootFolder = fsManager.resolveFile(rootFolderName);
+        rootFolder = resolveFile(rootFolderName);
         if (!rootFolder.exists()) {
             throw new IllegalArgumentException(rootFolderName + " doesn't exist.");
         }
@@ -245,6 +269,24 @@ public final class TiddlyWikiGenerator {
         if (maxLevelParamValue != null && !maxLevelParamValue.isEmpty()) {
             maxLevel = Integer.parseInt(maxLevelParamValue);
         }
+    }
+
+    /**
+     * Resolves a FileObject with a given path.
+     *
+     * @param path the relative or absolute path to a file.
+     * @return the FileObject resolved from the path
+     * @throws FileSystemException if FileObject could not be resolved
+     */
+    private FileObject resolveFile(String path) throws FileSystemException {
+        FileSystemManager fsManager = VFS.getManager();
+        FileObject file;
+        if (workingFolder != null) {
+            file = fsManager.resolveFile(workingFolder, path);
+        } else {
+            file = fsManager.resolveFile(path);
+        }
+        return file;
     }
 
     /**

@@ -1,8 +1,8 @@
 package de.bimalo.tiddlywiki.fs;
 
-import de.bimalo.tiddlywiki.common.CommandLineParser;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,12 +37,57 @@ public class TiddlyWikiGeneratorTest {
     }
 
     @Test
-    public void TiddlyWikiGenerator_construct_ValidArguments() {
-        String[] args = new String[]{"-rootFolder=/test/test11 muster/xxx", "-templateFile=/test/test22/template.html", "-resultFile=/test/test22/result.html"};
-        CommandLineParser cmdParser = new CommandLineParser();
-        cmdParser.parseArguments(args);
-
-        //TiddlyWikiGenerator twgen = new TiddlyWikiGenerator(cmdParser.getArgumentValues());
+    public void TiddlyWikiGenerator_construct_InvalidArguments1() {
+        String[] args = new String[]{};
+        try {
+            TiddlyWikiGenerator.main(args);
+            assertTrue(false);
+        } catch (Throwable th) {
+            assertTrue(true);
+        }
     }
 
+    @Test
+    public void TiddlyWikiGenerator_construct_InvalidArguments2() {
+        String[] args = new String[]{"-rootFolder=/test/test11 muster/xxx"};
+        try {
+            TiddlyWikiGenerator.main(args);
+            assertTrue(false);
+        } catch (Throwable th) {
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    public void TiddlyWikiGenerator_construct_InvalidArguments3() {
+        String[] args = new String[]{"-rootFolder=/test/test11 muster/xxx", "-templateFile=/tmp/template.html"};
+        try {
+            TiddlyWikiGenerator.main(args);
+            assertTrue(false);
+        } catch (Throwable th) {
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    public void TiddlyWikiGenerator_construct_InvalidArguments4() {
+        String[] args = new String[]{"-configFile=test.properties"};
+        try {
+            TiddlyWikiGenerator.main(args);
+            assertTrue(false);
+        } catch (Throwable th) {
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    public void TiddlyWikiGenerator_construct_RootFolderDoesNotExist() {
+        String[] args = new String[]{"-rootFolder=/test/test11 muster/xxx", "-templateFile=/tmp/template.html", "-resultFile=test.html"};
+        try {
+            TiddlyWikiGenerator.main(args);
+            assertTrue(false);
+        } catch (Throwable th) {
+            assertTrue(true);
+        }
+    }
 }

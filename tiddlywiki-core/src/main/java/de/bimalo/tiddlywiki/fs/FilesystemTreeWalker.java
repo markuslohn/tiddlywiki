@@ -29,11 +29,6 @@ import org.slf4j.LoggerFactory;
 final class FilesystemTreeWalker {
 
     /**
-     * A list of extensions of files supported by this generator.
-     */
-    public static final String SUPPORTED_FILE_TYPES = "md|rst|MD|RST|txt|TXT|pdf|"
-            + "PDF|doc|DOC|docx|ppt|PPT|pptx|xls|XLS|xlsx|itmz|xmind|jpg|png|PNG|JPG";
-    /**
      * Logger instance.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemTreeWalker.class);
@@ -189,8 +184,7 @@ final class FilesystemTreeWalker {
      */
     private boolean isFile(FileObject file) throws FileSystemException {
         String extension = file.getName().getExtension();
-        return file.getType().equals(FileType.FILE) && extension != null
-                && extension.matches(SUPPORTED_FILE_TYPES);
+        return file.getType().equals(FileType.FILE);
     }
 
     /**

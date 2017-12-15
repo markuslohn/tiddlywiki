@@ -1,0 +1,29 @@
+#!/bin/sh
+
+BASENAMECMD=`which basename`
+DIRNAMECMD=`which dirname`
+READLINKCMD=`which readlink`
+
+if [ -L $0 ]
+then
+  BASEDIR="`${DIRNAMECMD} $(${READLINKCMD} $0)`/.."
+else
+  BASEDIR="`${DIRNAMECMD} $0`/.."
+fi
+
+BASEDIR="`cd \"${BASEDIR}\" && pwd`"
+LOGDIR="$BASEDIR"/logs
+WORKDIR="$PWD"
+LIBDIR="$BASEDIR"/lib
+
+CLASSPATH="$BASEDIR"/config
+
+for i in "$LIBDIR"/*.jar
+  do
+    CLASSPATH="$CLASSPATH":"$i"
+  done
+
+#echo $CLASSPATH
+#echo $WORKDIR
+
+java -Xmx512m -Dlogging.dir="$LOGDIR" -Dworking.dir="$WORKDIR" -classpath "$CLASSPATH" de.bimalo.tiddlywiki.fs.TiddlyWikiGenerator "$@"
