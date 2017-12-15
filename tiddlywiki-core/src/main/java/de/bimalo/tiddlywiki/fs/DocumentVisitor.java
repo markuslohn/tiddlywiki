@@ -120,7 +120,7 @@ final class DocumentVisitor implements FileObjectVisitor {
         } catch (RuntimeException ex) {
             throw ex;
         } catch (IOException | TikaException ex) {
-             LOGGER.error("Could not parse file {}, because of {}.", file.getName().getPath(), ex.getMessage());
+            LOGGER.error("Could not parse file {}, because of {}.", file.getName().getPath(), ex.getMessage());
             if (ex instanceof FileSystemException) {
                 throw (FileSystemException) ex;
             } else {
@@ -185,8 +185,10 @@ final class DocumentVisitor implements FileObjectVisitor {
                     String rootFolderPath = rootFolder.getName().getPath();
                     absolutePath = absolutePath.replaceAll(rootFolderPath, "");
                 }
-                String[] pathNames = absolutePath.split(String.valueOf(File.separator));
+                /*String[] pathNames = absolutePath.split(String.valueOf(File.separator));
                 keywords.addAll(Arrays.asList(pathNames));
+                 */
+                keywords.add(absolutePath);
             }
         } catch (FileSystemException ex) {
             LOGGER.warn(ex.getMessage());
