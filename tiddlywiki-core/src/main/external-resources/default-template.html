@@ -45,8 +45,10 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE." />
 <link id="faviconLink" rel="shortcut icon" href="favicon.ico">
-<title>Mein TiddlyWiki — ein persönliches nicht-lineares Web-Notizbuch
+</#noparse>
+<title>${title} — ${subTitle}
 </title>
+<#noparse>
 <!--~~ This is a Tiddlywiki file. The points of interest in the file are marked with this pattern ~~--><!--~~ Raw markup ~~-->
 <script>window.twttr = (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0],
@@ -11840,7 +11842,7 @@ Error message and password prompt
         },
         &quot;$:/SiteTitle&quot;: {
             &quot;title&quot;: &quot;$:/SiteTitle&quot;,
-            &quot;text&quot;: &quot;Personal Blog&quot;
+            &quot;text&quot;: &quot;${title}&quot;
         },
 <#noparse>
         &quot;$:/language/Snippets/ListByTag&quot;: {
