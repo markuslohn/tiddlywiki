@@ -14,6 +14,7 @@ import org.apache.commons.vfs2.FileNotFolderException;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
+import org.apache.commons.vfs2.PatternFileSelector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +62,12 @@ final class FilesystemTreeWalker {
     private int maxLevel = -1;
 
     /**
+     * Selects files with this regular expressions matched against base
+     * filename.
+     */
+    private String includePattern = null;
+
+    /**
      * Visitor implementation for documents. This variable is used as cache. Can
      * be moved into a factory in a future release.
      */
@@ -105,6 +112,16 @@ final class FilesystemTreeWalker {
      */
     public void setMaxLevel(final int maxLevel) {
         this.maxLevel = maxLevel;
+    }
+
+    /**
+     * Sets a new regular expression to select files when walking to the file
+     * system.
+     *
+     * @param includePattern a new regular expression to select files
+     */
+    public void setIncludePattern(final String includePattern) {
+        this.includePattern = includePattern;
     }
 
     /**
@@ -183,7 +200,6 @@ final class FilesystemTreeWalker {
      * @throws FileSystemException if operation fails
      */
     private boolean isFile(FileObject file) throws FileSystemException {
-        String extension = file.getName().getExtension();
         return file.getType().equals(FileType.FILE);
     }
 
@@ -196,7 +212,12 @@ final class FilesystemTreeWalker {
      */
     private List<FileObject> listAndSortChildrens(FileObject parentFolder)
             throws FileSystemException {
-        List<FileObject> children = Arrays.asList(parentFolder.getChildren());
+        List<FileObject> children = null;
+        if (includePattern != null) {
+            children = Arrays.asList(parentFolder.findFiles(new PatternFileSelector(includePattern)));
+        } else {
+            children = Arrays.asList(parentFolder.getChildren());
+        }
         Collections.sort(children, new FilenameComparator());
         return children;
     }

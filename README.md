@@ -47,6 +47,11 @@ bimalo-tiddlywiki
 |rootFolder |  The absolute or relative path to the folder containing the content.
 |templateFile| The absolute or relative path to a template file.
 |resultFile| The absolute or relative path to the result file.
+|maxLevel (optional)| Defines the maximum level walking trough the file system hierarchy.
+|includePattern (optional)| Defines a regular expression to select files.
+
+**Example**
+To select only pdf and markdown files use the following includePattern: `".*\.(pdf|md)"`
 
 **Note:**
 As alternative you can put all parameters in a config file and provide the path to the config file when invoking the generator. The config file needs `.properties` as extension. See the following example:

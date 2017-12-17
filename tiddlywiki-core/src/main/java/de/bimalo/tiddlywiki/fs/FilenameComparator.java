@@ -41,8 +41,11 @@ final class FilenameComparator implements Comparator<FileObject>, Serializable {
         FileName fileName = file.getName();
         StringBuilder sb = new StringBuilder();
         sb.append(fileName.getBaseName());
-        sb.append(".");
-        sb.append(fileName.getExtension());
+        String extension = fileName.getExtension();
+        if (extension != null && extension.length() > 0) {
+            sb.append(".");
+            sb.append(extension);
+        }
         return sb.toString();
     }
 

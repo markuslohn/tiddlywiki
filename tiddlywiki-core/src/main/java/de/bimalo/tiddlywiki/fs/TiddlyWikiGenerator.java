@@ -18,6 +18,8 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
@@ -61,13 +63,17 @@ public final class TiddlyWikiGenerator {
      * Name of the argument for the max level.
      */
     private static final String MAXLEVEL_ARGUMENT = "maxLevel";
+    /**
+     * Name of the argument for the include pattern.
+     */
+    private static final String INCLUDEPATTERN_ARGUMENT = "includePattern";
 
     /**
      * The folder from which this program was called.
      */
     private FileObject workingFolder = null;
     /**
-     * The folder used to start analyzing files for the wiki content.
+     * The folder used to start analyzing files for the Wiki content.
      */
     private FileObject rootFolder = null;
     /**
@@ -83,6 +89,12 @@ public final class TiddlyWikiGenerator {
      * value means endless. Default is endless.
      */
     private int maxLevel = -1;
+
+    /**
+     * Selects files with this regular expressions matched against base
+     * filename.
+     */
+    private String includePattern = null;
 
     /**
      * Creates a new <code>TiddlyWikiGenerator</code> with arguments provided as
@@ -111,6 +123,8 @@ public final class TiddlyWikiGenerator {
 
             initMaxLevelArgument(arguments);
 
+            initIncludePatternArgument(arguments);
+
         } catch (IllegalArgumentException ex) {
             throw ex;
         } catch (FileSystemException ex) {
@@ -128,6 +142,7 @@ public final class TiddlyWikiGenerator {
             LOGGER.info("Start analyzing from {}...", rootFolder.getName().getPath());
             FilesystemTreeWalker traverser = new FilesystemTreeWalker(rootFolder);
             traverser.setMaxLevel(maxLevel);
+            traverser.setIncludePattern(includePattern);
             TiddlyWiki tw = traverser.walkFileTree();
             LOGGER.info("Done.");
 
@@ -179,6 +194,11 @@ public final class TiddlyWikiGenerator {
         sb.append("rootFolder = The absolute or relative path to the folder containing the content. ").append(newline);
         sb.append("templateFile = The absolute or relative path to a template file. ").append(newline);
         sb.append("resultFile = The absolute or relative path to the result file. ").append(newline);
+        sb.append(newline);
+        sb.append("Optional Parameters:").append(newline);
+        sb.append("maxLevel = Defines the maximum level walking trough the file system hierarchy.").append(newline);
+        sb.append("includePattern = Defines a regular expression to select files.").append(newline);
+        sb.append(newline);
         sb.append(newline);
         sb.append("Example: ").append(newline);
         sb.append("./tw -rootFolder=<value> -templateFile=<value> -resultFile=<value> ").append(newline);
@@ -269,6 +289,26 @@ public final class TiddlyWikiGenerator {
         if (maxLevelParamValue != null && !maxLevelParamValue.isEmpty()) {
             maxLevel = Integer.parseInt(maxLevelParamValue);
         }
+    }
+
+    /**
+     * Lookup and test the argument "includePattern".
+     *
+     * @param arguments a Map containing all arguments
+     * @throw IllegalArgumentException if the includePattern is an invalid
+     * regular expression.
+     */
+    private void initIncludePatternArgument(Map<String, String> arguments) {
+        includePattern = arguments.get(INCLUDEPATTERN_ARGUMENT);
+        LOGGER.trace("includePattern= {}.", includePattern);
+        try {
+            if (includePattern != null) {
+                Pattern regexpTest = Pattern.compile(includePattern);
+            }
+        } catch (PatternSyntaxException ex) {
+            throw new IllegalArgumentException(includePattern + " is an invalid regular expression.");
+        }
+
     }
 
     /**
