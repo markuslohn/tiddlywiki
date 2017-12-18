@@ -6,6 +6,7 @@ import de.bimalo.tiddlywiki.common.CommandLineParser;
 import de.bimalo.tiddlywiki.common.TimeRecorder;
 import de.bimalo.tiddlywiki.TiddlyWiki;
 import de.bimalo.tiddlywiki.common.StreamUtilities;
+import de.bimalo.tiddlywiki.common.StringUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
@@ -46,6 +47,11 @@ public final class TiddlyWikiGenerator {
      * Logger instance.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(TiddlyWikiGenerator.class);
+
+    /**
+     * The name of the class path property.
+     */
+    private static String CLASSPATH_PROPERTY_NAME = "java.class.path";
 
     /**
      * Name of the argument for the root folder.
@@ -188,11 +194,10 @@ public final class TiddlyWikiGenerator {
         sb.append("tw -rootFolder=<value> -templateFile=<value> -resultFile=<value> ").append(newline);
         sb.append(newline);
         sb.append("rootFolder = The absolute or relative path to the folder containing the content. Default: Use the current folder.").append(newline);
-        sb.append("templateFile = The absolute or relative path to a template file. Default: Lookup for file default-template.html in the current folder.").append(newline);
+        sb.append("templateFile = The absolute or relative path to a template file. Default: Lookup for file default-template.html in the current folder or classpath.").append(newline);
         sb.append("resultFile = The absolute or relative path to the result file. Default: Write the file index.html to the current folder.").append(newline);
         sb.append("maxLevel = Defines the maximum level walking trough the file system hierarchy. Default: Lookup the complete hierarchy of folders.").append(newline);
         sb.append("includePattern = Defines a regular expression to select files. Default: Select all files and folders.").append(newline);
-        sb.append(newline);
         sb.append(newline);
         sb.append("Example: ").append(newline);
         sb.append("tw -rootFolder=<value> -templateFile=<value> -resultFile=<value> ").append(newline);
@@ -258,7 +263,15 @@ public final class TiddlyWikiGenerator {
         LOGGER.trace("tempalteFileName= {}.", templateFileName);
         templateFile = resolveFile(templateFileName);
         if (!templateFile.exists()) {
-            throw new IllegalArgumentException(templateFile + " doesn't exist.");
+            String classpathTemplateFile = StringUtils.concatString("res:", templateFileName);
+            try {
+                templateFile = resolveFile(classpathTemplateFile);
+            } catch (FileSystemException ex) {
+                // Exception can be ignored, because handled afterwards!
+            }
+        }
+        if (!templateFile.exists()) {
+            throw new IllegalArgumentException(templateFileName + " doesn't exist in the file system and classpath.");
         }
     }
 
@@ -344,15 +357,6 @@ public final class TiddlyWikiGenerator {
         VersionInfo vInfo = new VersionInfo();
         System.out.println("TiddlyWiki Generator " + vInfo.getVersionNumberString());
         LOGGER.info("TiddlyWiki Generator {}", vInfo.getVersionNumberString());
-
-        if (args != null) {
-            System.out.println("Arguments:");
-            LOGGER.info("Arguments: ");
-            for (String arg : args) {
-                System.out.println(arg);
-                LOGGER.info(arg);
-            }
-        }
 
         TimeRecorder timerec = new TimeRecorder("TiddlyWiki");
         timerec.start();

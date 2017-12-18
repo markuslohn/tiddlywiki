@@ -24,9 +24,9 @@ The final distribution contains the following structure and files:
 bimalo-tiddlywiki  
 |--bin    
 |---- tw  
-|---- default-template.html  
 |--config  
 |---- log4j.properties  
+|---- default-template.html  
 |--lib  
 |----- bimalo-tiddlywiki-XXX.jar  
 |--log  
@@ -47,7 +47,7 @@ bimalo-tiddlywiki
 |Parameter  |  Description
 |-----------|-------------
 |rootFolder |  The absolute or relative path to the folder containing the content. Default: Use the current folder.
-|templateFile| The absolute or relative path to a template file. Default: Lookup for file default-template.html in the current folder.
+|templateFile| The absolute or relative path to a template file. Default: Lookup for file default-template.html in the current folder or classpath.
 |resultFile| The absolute or relative path to the result file. Default: Write the file index.html to the current folder.
 |maxLevel (optional)| Defines the maximum level walking trough the file system hierarchy. Default: Lookup the complete hierarchy of folders.
 |includePattern (optional)| Defines a regular expression to select files. Default: Select all files and folders.
@@ -61,17 +61,30 @@ As alternative you can put all parameters in a config file and provide the path 
 
 ### Examples
 
-1. Specify the rootFolder, the template file and where to write the result file. All document types will be considered.
+1. Specify the rootFolder, the template file and where to write the result file.
 
-```
-$ tw -rootFolder=$HOME/documents -templateFile=blog-template.html -resultFile=$HOME/blog.html
-```
+   ```
+   $ tw -rootFolder=$HOME/documents -templateFile=blog-template.html -resultFile=$HOME/blog.html
+   ```
 
-2. Start with the current folder, use the default-template and consider only PDFs and MD files.
+   In this case it starts traversing the file system starting with $HOME/documents. It creates a Tiddler for every file, like PDF etc.. It uses the TiddlyWiki template blog-template.html. This file will be found in the current folder or classpath. The result file will be written to $HOME/blog.html.
 
-```
-$ tw includePattern=".*\.(pdf|md)"
-```
+2. Only specify argument includePattern.
+
+   ```
+   $ tw includePattern=".*\.(pdf|md)"
+   ```
+
+   It starts traversing the file system in the current folder. It searches for the file default-template.html in the current folder and classpath. Furthermore it creates a Tiddler for PDF and Mardown files only. The result file will be named index.html and written to the current folder.
+
+3. Start with no argument
+
+   ```
+   $ tw
+   ```
+
+   It starts traversing the file system in the current folder. It searches for the file default-template.html in the current folder and classpath. It creates a Tiddler for every file, like PDF etc.. The result file will be named index.html and written to the current folder.
+
 
 ## Configuration
 
