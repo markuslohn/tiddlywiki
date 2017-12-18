@@ -107,10 +107,6 @@ public final class TiddlyWikiGenerator {
      */
     public TiddlyWikiGenerator(Map<String, String> arguments) {
         Assert.notNull(arguments);
-        Assert.isTrue(arguments.containsKey(ROOTFOLDER_ARGUMENT), "Argument rootFolder is missing.");
-        Assert.isTrue(arguments.containsKey(TEMPLATEFILE_ARGUMENT), "Argument templateFile is missing.");
-        Assert.isTrue(arguments.containsKey(RESULTFILE_ARGUMENT), "Argument resultFile is missing.");
-
         try {
 
             initWorkingFolder();
@@ -168,7 +164,7 @@ public final class TiddlyWikiGenerator {
             } finally {
                 StreamUtilities.closeWriter(out);
             }
-            LOGGER.info("TiddlyWikie successfully written to {}.", resultFile.getName().getPath());
+            LOGGER.info("TiddlyWiki successfully written to {}.", resultFile.getName().getPath());
         } catch (RuntimeException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -189,22 +185,21 @@ public final class TiddlyWikiGenerator {
 
         StringBuilder sb = new StringBuilder();
         sb.append(TiddlyWikiGenerator.class).append(" Usage: ").append(newline);
-        sb.append("./tw -rootFolder=<value> -templateFile=<value> -resultFile=<value> ").append(newline);
+        sb.append("tw -rootFolder=<value> -templateFile=<value> -resultFile=<value> ").append(newline);
         sb.append(newline);
-        sb.append("rootFolder = The absolute or relative path to the folder containing the content. ").append(newline);
-        sb.append("templateFile = The absolute or relative path to a template file. ").append(newline);
-        sb.append("resultFile = The absolute or relative path to the result file. ").append(newline);
-        sb.append(newline);
-        sb.append("Optional Parameters:").append(newline);
-        sb.append("maxLevel = Defines the maximum level walking trough the file system hierarchy.").append(newline);
-        sb.append("includePattern = Defines a regular expression to select files.").append(newline);
+        sb.append("rootFolder = The absolute or relative path to the folder containing the content. Default: Use the current folder.").append(newline);
+        sb.append("templateFile = The absolute or relative path to a template file. Default: Lookup for file default-template.html in the current folder.").append(newline);
+        sb.append("resultFile = The absolute or relative path to the result file. Default: Write the file index.html to the current folder.").append(newline);
+        sb.append("maxLevel = Defines the maximum level walking trough the file system hierarchy. Default: Lookup the complete hierarchy of folders.").append(newline);
+        sb.append("includePattern = Defines a regular expression to select files. Default: Select all files and folders.").append(newline);
         sb.append(newline);
         sb.append(newline);
         sb.append("Example: ").append(newline);
-        sb.append("./tw -rootFolder=<value> -templateFile=<value> -resultFile=<value> ").append(newline);
+        sb.append("tw -rootFolder=<value> -templateFile=<value> -resultFile=<value> ").append(newline);
         sb.append(newline);
         sb.append("Alternative: Provide all arguments within a config file and use the following syntax: ").append(newline);
-        sb.append("./tw -configFile=config.proprties ").append(newline);
+        sb.append("tw -configFile=config.proprties ").append(newline);
+        sb.append(newline);
 
         try {
             out.write(sb.toString().getBytes("UTF-8"));
@@ -241,6 +236,9 @@ public final class TiddlyWikiGenerator {
      */
     private void initResultFileArgument(Map<String, String> arguments) throws FileSystemException {
         String resultFileName = arguments.get(RESULTFILE_ARGUMENT);
+        if (resultFileName == null || resultFileName.isEmpty()) {
+            resultFileName = "index.html";
+        }
         LOGGER.trace("resultFile= {}.", resultFileName);
         resultFile = resolveFile(resultFileName);
     }
@@ -254,6 +252,9 @@ public final class TiddlyWikiGenerator {
      */
     private void initTemplateFileArgument(Map<String, String> arguments) throws FileSystemException {
         String templateFileName = arguments.get(TEMPLATEFILE_ARGUMENT);
+        if (templateFileName == null || templateFileName.isEmpty()) {
+            templateFileName = "default-template.html";
+        }
         LOGGER.trace("tempalteFileName= {}.", templateFileName);
         templateFile = resolveFile(templateFileName);
         if (!templateFile.exists()) {
@@ -319,10 +320,15 @@ public final class TiddlyWikiGenerator {
      * @throws FileSystemException if FileObject could not be resolved
      */
     private FileObject resolveFile(String path) throws FileSystemException {
+        LOGGER.trace("resolveFile= {}.", path);
         FileSystemManager fsManager = VFS.getManager();
         FileObject file;
         if (workingFolder != null) {
-            file = fsManager.resolveFile(workingFolder, path);
+            if (path == null || path.isEmpty()) {
+                file = workingFolder;
+            } else {
+                file = fsManager.resolveFile(workingFolder, path);
+            }
         } else {
             file = fsManager.resolveFile(path);
         }

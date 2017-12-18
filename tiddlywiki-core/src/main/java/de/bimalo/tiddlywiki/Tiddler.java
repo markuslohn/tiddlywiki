@@ -30,10 +30,6 @@ public class Tiddler implements Comparable<Tiddler> {
      */
     public static final String SUBTITLE_TIDDLER_NAME = "SiteSubtitle";
     /**
-     * Name of the reserved Tiddler MainMenu.
-     */
-    public static final String MAINMENU_TIDDLER_NAME = "MainMenu";
-    /**
      * Name of the reserved Tiddler DefaultTiddlers.
      */
     public static final String DEFAULTTIDDLERS_TIDDLER_NAME = "DefaultTiddlers";
@@ -42,7 +38,7 @@ public class Tiddler implements Comparable<Tiddler> {
      * An array of Tiddler names reserved by the TiddlyWiki implementation.
      */
     private static final String[] RESERVED_TIDDLER_NAMES = new String[]{
-        TITLE_TIDDLER_NAME, SUBTITLE_TIDDLER_NAME, MAINMENU_TIDDLER_NAME, DEFAULTTIDDLERS_TIDDLER_NAME
+        TITLE_TIDDLER_NAME, SUBTITLE_TIDDLER_NAME, DEFAULTTIDDLERS_TIDDLER_NAME
     };
     /**
      * A unique identifier for this Tiddler.
@@ -109,6 +105,11 @@ public class Tiddler implements Comparable<Tiddler> {
      * TiddlyWiki is started.
      */
     private boolean isDefault = false;
+
+    /**
+     * Determines if this Tiddler is hidden.
+     */
+    private boolean isHidden = false;
 
     /**
      * Creates a new <code>Tiddler</code> with default values.
@@ -289,8 +290,6 @@ public class Tiddler implements Comparable<Tiddler> {
     /**
      * Sets the absolute path for this Tiddler.
      *
-     * @param uri the new absolute path for this Tiddler. NULL as value is
-     * ignored.
      */
     public void setPath(final String path) {
         if (path != null) {
@@ -385,6 +384,29 @@ public class Tiddler implements Comparable<Tiddler> {
      */
     public boolean isDefault() {
         return isDefault;
+    }
+
+    /**
+     * Determines if this Tiddler is hidden.
+     *
+     * @return true if this Tiddler is hidden, false if not.
+     */
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    /**
+     * Hides this Tiddler.
+     */
+    public void hideTiddler() {
+        isHidden = true;
+    }
+
+    /**
+     * Removes the hidden flag from this Tiddler.
+     */
+    public void unhideTiddler() {
+        isHidden = false;
     }
 
     /**
@@ -531,17 +553,6 @@ public class Tiddler implements Comparable<Tiddler> {
     }
 
     /**
-     * Creates a special Tiddler for the TiddlyWiki main menu.
-     *
-     * @return a new Tiddler for the TiddlyWiki main menu.
-     */
-    public static Tiddler createMainMenuTiddler() {
-        Tiddler tiddler = new Tiddler(MAINMENU_TIDDLER_NAME);
-        tiddler.setText("");
-        return tiddler;
-    }
-
-    /**
      * Creates a special Tiddler for the TiddlyWiki default tiddlers.
      *
      * @return a new Tiddler for the TiddlyWiki default tiddlers.
@@ -578,8 +589,8 @@ public class Tiddler implements Comparable<Tiddler> {
     private boolean isReservedTiddler() {
         boolean reserved = false;
 
-        for (int i = 0; i < RESERVED_TIDDLER_NAMES.length; i++) {
-            if (RESERVED_TIDDLER_NAMES[i].equalsIgnoreCase(title)) {
+        for (String RESERVED_TIDDLER_NAMES1 : RESERVED_TIDDLER_NAMES) {
+            if (RESERVED_TIDDLER_NAMES1.equalsIgnoreCase(title)) {
                 reserved = true;
                 break;
             }

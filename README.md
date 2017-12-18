@@ -1,6 +1,6 @@
 # bimalo-tiddlywiki
 
-An utility to generate a [Tiddlywiki](http://tiddlywiki.com) file based on folders and files on the file system. For every file a new Tiddler will be generated. The name of the folders are used as tags for the corresponding Tiddlers.
+An utility to generate a [Tiddlywiki](http://tiddlywiki.com) file based on folders and files on the file system. For every file a new Tiddler will be generated. The name of the folders are used as tags for the corresponding Tiddlers. Text and Markdown files will be directly imported into the TiddlyWiki. PDFs, Images etc. only linked within the TiddlyWiki. How to use Text and Markdown files inside the TiddlyWiki can be controlled using a Front Matter Block. See blow for further details.
 
 It uses the following frameworks:
 
@@ -18,14 +18,6 @@ tiddlywiki-core | TiddlyWiki business objects, file system analysis and wiki gen
 ## Installation
 
 1. Download and extract the distribution to a folder on your target system.
-2. Option: Create a symbolic link
-
-   ```bash
-   $ cd INSTALL_DIR/bin
-   $ sudo ln -s INSTALL_DIR/bin/tw /usr/local/bin/tw
-   ```
-
-## Usage
 
 The final distribution contains the following structure and files:
 
@@ -39,25 +31,46 @@ bimalo-tiddlywiki
 |----- bimalo-tiddlywiki-XXX.jar  
 |--log  
 
+2. Option: Create a symbolic link
+
+   ```bash
+   $ cd INSTALL_DIR/bin
+   $ sudo ln -s INSTALL_DIR/bin/tw /usr/local/bin/tw
+   ```
+
+  The symbolic link allows to call the generator only with the command `tw` anywhere on your machine.
+
+## Usage
 
 ./tw -rootFolder=<value> -templateFile=<value> -resultFile=<value>
 
 |Parameter  |  Description
 |-----------|-------------
-|rootFolder |  The absolute or relative path to the folder containing the content.
-|templateFile| The absolute or relative path to a template file.
-|resultFile| The absolute or relative path to the result file.
-|maxLevel (optional)| Defines the maximum level walking trough the file system hierarchy.
-|includePattern (optional)| Defines a regular expression to select files.
-
-**Example**
-To select only pdf and markdown files use the following includePattern: `".*\.(pdf|md)"`
+|rootFolder |  The absolute or relative path to the folder containing the content. Default: Use the current folder.
+|templateFile| The absolute or relative path to a template file. Default: Lookup for file default-template.html in the current folder.
+|resultFile| The absolute or relative path to the result file. Default: Write the file index.html to the current folder.
+|maxLevel (optional)| Defines the maximum level walking trough the file system hierarchy. Default: Lookup the complete hierarchy of folders.
+|includePattern (optional)| Defines a regular expression to select files. Default: Select all files and folders.
 
 **Note:**
 As alternative you can put all parameters in a config file and provide the path to the config file when invoking the generator. The config file needs `.properties` as extension. See the following example:
 
 ```
 ./tw.sh -configFile=tw.properties
+```
+
+### Examples
+
+1. Specify the rootFolder, the template file and where to write the result file. All document types will be considered.
+
+```
+$ tw -rootFolder=$HOME/documents -templateFile=blog-template.html -resultFile=$HOME/blog.html
+```
+
+2. Start with the current folder, use the default-template and consider only PDFs and MD files.
+
+```
+$ tw includePattern=".*\.(pdf|md)"
 ```
 
 ## Configuration
@@ -86,6 +99,7 @@ description  |  A detailed human readable explanation for the Tiddler.
 creator  | The author/creator of the Tiddler.  
 keywords  | A list of keywords or tags used to classify the Tiddler.  
 default | yes or no to indicate this is a default Tiddler.
+hide  | yes or not to control the Tiddler should be hidden or not in the result file.
 
 ### Freemarker Template
 

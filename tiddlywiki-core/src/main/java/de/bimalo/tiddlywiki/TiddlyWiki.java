@@ -48,7 +48,6 @@ public final class TiddlyWiki {
     public TiddlyWiki() {
         siteTitle = Tiddler.createTitleTiddler();
         siteSubtitle = Tiddler.createSubTitleTiddler();
-        mainMenu = Tiddler.createMainMenuTiddler();
         defaultTiddlers = Tiddler.createDefaultTiddler();
     }
 
@@ -83,17 +82,6 @@ public final class TiddlyWiki {
     public void addTiddler(Tiddler tiddler) {
         if (tiddler != null) {
             tiddlers.add(tiddler);
-        }
-    }
-
-    /**
-     * Adds an already prepared Tiddler to the main menu.
-     *
-     * @param tiddler a Tiddler for the main menu
-     */
-    public void addMainMenuTiddler(Tiddler tiddler) {
-        if (tiddler != null) {
-            mainMenu.addTiddler(tiddler);
         }
     }
 

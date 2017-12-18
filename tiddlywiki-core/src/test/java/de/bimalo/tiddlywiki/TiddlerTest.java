@@ -106,19 +106,6 @@ public class TiddlerTest {
     }
 
     @Test
-    public void Tiddler_title_ModifySpecialTiddler() {
-        Tiddler t = Tiddler.createMainMenuTiddler();
-        assertEquals("MainMenu", t.getTitle());
-        try {
-            t.setTitle("New one");
-            assertTrue("IllegalArgumentException was expected.", false);
-        } catch (IllegalArgumentException ex) {
-            assertTrue(true);
-        }
-
-    }
-
-    @Test
     public void Tiddler_addTiddler_InvalidArgument() {
         Tiddler t = new Tiddler();
         t.addTiddler(null);

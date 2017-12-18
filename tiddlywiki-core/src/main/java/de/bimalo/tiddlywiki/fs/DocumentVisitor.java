@@ -4,7 +4,6 @@ import de.bimalo.tiddlywiki.Tiddler;
 import de.bimalo.tiddlywiki.common.StreamUtilities;
 import de.bimalo.tika.parser.frontmatter.FrontMatterParser;
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,7 +91,6 @@ final class DocumentVisitor implements FileObjectVisitor {
         String text = parseFile(file, md);
 
         Tiddler tiddler = createTiddler(file, md, text);
-
         return tiddler;
     }
 
@@ -155,11 +153,14 @@ final class DocumentVisitor implements FileObjectVisitor {
         tiddler.setText(text);
         tiddler.setPath(file.getName().getPath());
         tiddler.setContentType(getContentType(file, md));
-        String value = md.get("default");
-        if ("yes".equalsIgnoreCase(value)) {
+        String defaultValue = md.get("default");
+        if ("yes".equalsIgnoreCase(defaultValue)) {
             tiddler.defineDefault();
         }
-
+        String hideValue = md.get("hide");
+        if ("yes".equalsIgnoreCase(hideValue)) {
+            tiddler.hideTiddler();
+        }
         LOGGER.debug("Done create tiddler for file {}...", file.getName().getPath());
         LOGGER.trace(tiddler.toString());
 

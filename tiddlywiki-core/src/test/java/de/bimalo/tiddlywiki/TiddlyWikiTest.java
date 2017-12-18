@@ -110,24 +110,4 @@ public class TiddlyWikiTest {
         assertNotNull(tw.getDefaultTiddler());
     }
 
-    @Test
-    public void TiddlyWiki_addMainMenuTiddler_InvalidArgument() {
-        TiddlyWiki tw = new TiddlyWiki();
-        assertNotNull(tw);
-        tw.addMainMenuTiddler(null);
-        assertNotNull(tw.getMainMenuTiddler());
-    }
-
-    @Test
-    public void TiddlyWiki_addMainMenuTiddler_ParentIsNull() {
-        TiddlyWiki tw = new TiddlyWiki();
-        assertNotNull(tw);
-
-        Tiddler t1 = new Tiddler("Test1");
-        tw.addMainMenuTiddler(t1);
-
-        Tiddler mainMenuTiddler = tw.getMainMenuTiddler();
-        assertNull(mainMenuTiddler.getParent());
-    }
-
 }

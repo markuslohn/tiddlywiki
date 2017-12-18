@@ -164,9 +164,11 @@ final class FilesystemTreeWalker {
                 if (!child.isHidden()) {
                     if (isFile(child)) {
                         Tiddler tiddler = createTiddler(child);
-                        wiki.addTiddler(tiddler);
-                        if (level == 0 || tiddler.isDefault()) {
-                            wiki.addDefaultTiddler(tiddler);
+                        if (!tiddler.isHidden()) {
+                            wiki.addTiddler(tiddler);
+                            if (tiddler.isDefault()) {
+                                wiki.addDefaultTiddler(tiddler);
+                            }
                         }
                     } else if (isDirectory(child)) {
                         level++;

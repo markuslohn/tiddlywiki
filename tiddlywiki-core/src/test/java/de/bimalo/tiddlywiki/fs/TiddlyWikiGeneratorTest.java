@@ -37,6 +37,17 @@ public class TiddlyWikiGeneratorTest {
     }
 
     @Test
+    public void TiddlyWikiGenerator_construct_InvalidArguments() {
+        String[] args = new String[]{};
+        try {
+            TiddlyWikiGenerator.main(null);
+            assertTrue(false);
+        } catch (Throwable th) {
+            assertTrue(true);
+        }
+    }
+
+    @Test
     public void TiddlyWikiGenerator_construct_InvalidArguments1() {
         String[] args = new String[]{};
         try {
