@@ -1,0 +1,12 @@
+1.1.0
+- improved TiddlyWiki template
+- introduced FrontMatter block in text and markdown files
+- removed mandatory arguments
+- added new argument includePattern
+- added default and hidden and lastModifyDate properties to a Tiddler
+- general improvements and error corrections
+- improved documentation
+- updated used library versions
+
+1.0.0
+Initial version of the TiddlyWiki generator.

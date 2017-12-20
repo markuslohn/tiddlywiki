@@ -1,0 +1,7 @@
+---
+title: Test2
+---
+
+Beinhaltet alle gescannten Dokumente aus 2017 unsortiert:
+
+<<list-links "[tag[/2017]]">>

@@ -81,7 +81,7 @@ public final class DocumentVisitorTest {
             URL testPdfUrl = this.getClass().getResource("/test1.pdf");
             FileSystemManager fsManager = VFS.getManager();
             document = fsManager.resolveFile(testPdfUrl);
-  
+
             FileObjectVisitor visitor = new DocumentVisitor();
             Object result = visitor.visit(document);
             assertNotNull(result);
@@ -90,6 +90,26 @@ public final class DocumentVisitorTest {
             assertEquals("testtitel", tiddler.getTitle());
             assertNotNull(tiddler.getModifier());
             assertEquals("mustermann", tiddler.getCreator());
+
+        } catch (Exception ex) {
+            assertTrue(ex.getMessage(), false);
+        }
+    }
+
+    @Test
+    public void DocumentVisitor_visit_TextDocument() {
+        FileObject document;
+        try {
+            URL testPdfUrl = this.getClass().getResource("/Test2.txt");
+            FileSystemManager fsManager = VFS.getManager();
+            document = fsManager.resolveFile(testPdfUrl);
+
+            FileObjectVisitor visitor = new DocumentVisitor();
+            Object result = visitor.visit(document);
+            assertNotNull(result);
+
+            Tiddler tiddler = (Tiddler) result;
+            assertEquals("Test2", tiddler.getTitle());
 
         } catch (Exception ex) {
             assertTrue(ex.getMessage(), false);
@@ -165,6 +185,7 @@ public final class DocumentVisitorTest {
             assertTrue(ex.getMessage(), false);
         }
     }
+
     @Test
     public void DocumentVisitor_Construct_InvalidFileObjectType() {
         try {

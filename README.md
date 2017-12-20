@@ -4,9 +4,14 @@ An utility to generate a [Tiddlywiki](http://tiddlywiki.com) file based on folde
 
 It uses the following frameworks:
 
-* [Apache Commons Virtual File System](https://commons.apache.org/proper/commons-vfs/): Used to walk trough the file system.
-* [Apache Freemarker](http://freemarker.org): A template engine used to generate the TiddlyWiki file.
-* [Apache Tika](http://tika.apache.org): A library to parse and retrieve document contents and meta data. The framework was extended with a YAML Front Matter Parser.
+* [Apache Commons Virtual File System](https://commons.apache.org/proper/commons-vfs/)<br>
+   Uses to walk through the file system. Released unter Apache 2.0 licence.
+* [Apache Freemarker](http://freemarker.org): <br>
+   A template engine used to generate the TiddlyWiki file. Released unter Apache 2.0 licence.
+* [Apache Tika](http://tika.apache.org):<br>
+   A library to parse and retrieve document contents and meta data. The framework was extended with a YAML Front Matter Parser. Released unter Apache 2.0 licence.
+* [EsotericSoftware Yamlbeans](https://github.com/EsotericSoftware/yamlbeans)<br>
+   A library to parse YAML blocks in text. Released unter MIT licence.
 
 The project contains the following modules
 
