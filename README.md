@@ -190,17 +190,18 @@ The possible attributes of a Tiddler can be obtained by the javadoc for de.bimal
         git fetch origin
         git checkout develop
         git pull
-        Set version number for the release
 
 3. Set version number
 
         mvn versions:set -DnewVersion=<release-version-number> -DgenerateBackupPoms=false -o
+        git add .
         git commit -m "Bumped version number to <release-version-number>"
         git tag -a <release-version-number>
 
 4. Set next version number
 
-        mvn versions:set -DnewVersion=<next-snapshot-version-number> -DgenerateBackupPoms=false -o         
+        mvn versions:set -DnewVersion=<next-snapshot-version-number> -DgenerateBackupPoms=false -o   
+        git add .      
         git commit -m "Bumped version number to <next-snapshot-version-number>"
 
 5. Push all commits and tags
