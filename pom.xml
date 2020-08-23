@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.bimalo.tiddlywiki</groupId>
   <artifactId>tiddlywiki</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>tiddlywiki</name>
   <description>A toolkit to generate automatically a Tiddlywiki by analysing the file system.</description>
@@ -26,14 +26,13 @@
       </roles>
     </developer>
   </developers>
-  <modules>
-    <module>tiddlywiki-common</module>
-    <module>tiddlywiki-core</module>
-  </modules>
-  <properties>
+   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.target>1.8</project.build.target>
     <project.build.source>1.8</project.build.source>
+    <apache-tika-version>1.16</apache-tika-version>
+    <apache-freemarker-version>2.3.27-incubating</apache-freemarker-version>
+    <apache-vfs-version>2.2</apache-vfs-version>
     <slf4j-version>1.7.25</slf4j-version>
     <log4j-version>1.2.17</log4j-version>
     <mockito-version>2.8.47</mockito-version>
@@ -48,6 +47,32 @@
     <maven-plugin-assembly-version>3.0.0</maven-plugin-assembly-version>
   </properties>
   <dependencies>
+     <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-core</artifactId>
+      <version>${apache-tika-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-parsers</artifactId>
+      <version>${apache-tika-version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-vfs2</artifactId>
+      <version>${apache-vfs-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+      <version>${apache-freemarker-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.esotericsoftware.yamlbeans</groupId>
+      <artifactId>yamlbeans</artifactId>
+      <version>1.12</version>   
+    </dependency>    
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -85,6 +110,15 @@
     </dependency>
   </dependencies>
   <build>
+     <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.properties</include>
+        </includes>
+      </resource>
+    </resources>
+
     <pluginManagement>
       <plugins>
         <plugin>
@@ -141,6 +175,58 @@
       </plugins>
     </pluginManagement>
     <plugins>
+        <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.4.2</version>
+        <configuration>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <finalName>bimalo-tiddlywiki-${version}</finalName>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>de.bimalo.tiddlywiki.fs.TiddlyWikiGenerator</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>${maven-plugin-assembly-version}</version>
+        <executions>
+          <execution>
+            <id>distro-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <finalName>bimalo-tiddlywiki-${version}</finalName>
+          <descriptors>
+            <descriptor>src/main/assembly/tiddlywiki.xml</descriptor>
+          </descriptors>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

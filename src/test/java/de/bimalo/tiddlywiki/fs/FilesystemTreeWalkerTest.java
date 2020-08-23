@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.commons.vfs2.FileNotFolderException;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.VFS;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -105,4 +107,25 @@ public class FilesystemTreeWalkerTest {
 
     }
 
+    @Test
+    public void FilesystemTreeWalker_walkFileTree_GoogleDrive() {
+        try {
+                FileSystemManager fsManager = VFS.getManager();
+        FileObject rootFolder = fsManager.resolveFile("/Volumes/GoogleDrive/My Drive/Referenz/_posts");
+ 
+            FilesystemTreeWalker tw = new FilesystemTreeWalker(rootFolder);
+            TiddlyWiki wiki = tw.walkFileTree();
+            assertNotNull(wiki);
+            assertNotNull(wiki.getTitleTiddler());
+            assertNotNull(wiki.getDefaultTiddler());
+
+            List<Tiddler> tiddlers = wiki.listTiddlers();
+            assertTrue(tiddlers.size() >= 1);
+        } catch (FileSystemException ex) {
+            assertTrue(ex.getMessage(), false);
+        } catch (IOException ex) {
+            assertTrue(ex.getMessage(), false);
+        }
+
+    }
 }
